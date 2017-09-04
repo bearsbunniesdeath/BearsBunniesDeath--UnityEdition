@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Bear
+  - FloorTile
+  - PlayerCenter
+  - test
+  - Torch
+  - staminaBar
+  - Bunny
+  - Trap
+  - Bomb
+  - Start
+  - ThickGrass
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player
+  - Bears
+  - Bunnies
+  - Obstacles
+  - Arrows
+  - Dead Arrows
+  - ThickGrass
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: FloorMat
+    uniqueID: 3042318997
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3314158581
+    locked: 0
+  - name: foregroundDarkness
+    uniqueID: 3505373315
+    locked: 0
+  - name: UI
+    uniqueID: 3700731799
+    locked: 0
+  - name: test top
+    uniqueID: 1757835653
+    locked: 0

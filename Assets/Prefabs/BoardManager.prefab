@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000011349269248}
+  m_IsPrefabParent: 1
+--- !u!1 &1000011349269248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4000010751610706}
+  - component: {fileID: 114000010386732664}
+  - component: {fileID: 114000013267404526}
+  m_Layer: 0
+  m_Name: BoardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000010751610706
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011349269248}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114000010386732664
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011349269248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00686a6bb18f724eae68f4acf48321a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapBuilder: {fileID: 114000013267404526}
+--- !u!114 &114000013267404526
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011349269248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e1453f9e35b1e4fa4430b71c8cce5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rows: 64
+  columns: 64
+  floorTiles:
+  - {fileID: 1800737380428430, guid: 232433ec772a9d649aa841ec7e984236, type: 2}
+  pathTile: {fileID: 1269074493430962, guid: 447fdda6742b39049b09ef94791d9183, type: 2}
+  terrainObjects:
+  - {fileID: 1000010791955108, guid: da5d2385f03e99c48884f9e06474a3de, type: 2}
+  - {fileID: 1000012581114124, guid: 12fc8bbe3cc5d3f4a8ff3ff0197a6114, type: 2}
+  thickGrass: {fileID: 1886263398954348, guid: 00884a086ece3fc4997dd7aa132649d2, type: 2}
+  StartObject: {fileID: 1000011701091022, guid: 6f220a35aed49ed4aa26c3a50d9e1d02,
+    type: 2}
+  FinishObject: {fileID: 1000011857209096, guid: 337ab7054a2e279479dee9c341c03ea8,
+    type: 2}
+  TorchObject: {fileID: 1000013653329870, guid: 72d3078a036adea4abc1c1c29b5753a4,
+    type: 2}
+  bear: {fileID: 1000012559450864, guid: 6963ddc95e360444394e92d667822ee5, type: 2}
+  bunny: {fileID: 1000013006952500, guid: c1cbb2bf4adb1214e92bbdbc8f8ef777, type: 2}
+  bunnyPrisoner: {fileID: 1000012377158842, guid: 0808ee5a24cb912479977a7adf6cef7d,
+    type: 2}
+  bunnyGuard: {fileID: 1000013706468624, guid: 71f08032a6b97ea43a9c6d3c29cbe64d, type: 2}
+  trap: {fileID: 1000013865656680, guid: b7c335846a0ea9b43ad8db3c6a02d392, type: 2}
+  bunnyJail: {fileID: 1000010235718420, guid: 8df1aafacbd36734c9d74c50dec58344, type: 2}
+  arrow: {fileID: 1000013356396314, guid: c102c8cd57bb3d641b33f85b07f7ac42, type: 2}
+  arrowShooter: {fileID: 1000013897778718, guid: 8f58154bb87ab5a4a9fcb912175ae912,
+    type: 2}
+  bombObject: {fileID: 1000011194850764, guid: d655f82e6686d9142bf622729785041f, type: 2}
+  armedBombObject: {fileID: 1000011053073784, guid: 35202ba34d85c3b48b6b4cd61fa65e91,
+    type: 2}
+  doodads:
+  - {fileID: 1000013206920236, guid: add6cbad9fd82e343bda3bdf49216d9e, type: 2}
+  - {fileID: 1000012112875622, guid: 8c69fe95064abd547bfd8e8d9144154d, type: 2}
+  - {fileID: 1000012958241216, guid: d74f4a70e3d827f4e83c47248736091a, type: 2}
+  - {fileID: 1209323212291642, guid: d0b5e6aa550f1c74c9cf64da5268b0a5, type: 2}
+  countOfTerrainObjects:
+    minimum: 100
+    maximum: 100
+  numberOfBears:
+    minimum: 9
+    maximum: 9
+  numberOfBunnies:
+    minimum: 10
+    maximum: 10
