@@ -32,6 +32,10 @@ namespace Completed
         private Image myTrapHUD;
         public float myStamina ;
 
+        //Upgradeable stats
+        private float myAdditionalSpeed = 0;
+        private int myAdditionalLives = 0;
+
         private ThickGrassScript myCurrentThickGrass;
 
         private int MAX_PLAYER_STAMINA = 100;
@@ -145,7 +149,7 @@ namespace Completed
             myLight.range = myDefaultLightRange; //Reset the light, so it will be normal unless changed in AdjustSpeedAndLightForThickGrass()
             //TODO: Gradually brighten back to normal
 
-            if (!Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Space)) {
+            if (!Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Space) || myDashTimer > 0f) {
                 ReleaseAllItems();
             }
                   
@@ -175,14 +179,16 @@ namespace Completed
                                 myDashTimer = DASH_TIME;
                             }
                         }
-                        else if (Input.GetKey(KeyCode.Space))
-                        {
-                            myRenderer.material.SetColor("_Color", Color.blue);
-                            Speed = AdjustSpeedAndLightForThickGrass(SPRINT_SPEED);
-                            DoRegularMoveControls();
-                            myStamina = myStamina - 25 * Time.deltaTime;
-                            myTimeSinceLastSprint = Time.fixedTime;
-                        }
+                        //For now we are not having a sprint, mechanism only dives
+
+                        //else if (Input.GetKey(KeyCode.Space))
+                        //{
+                        //    myRenderer.material.SetColor("_Color", Color.blue);
+                        //    Speed = AdjustSpeedAndLightForThickGrass(SPRINT_SPEED);
+                        //    DoRegularMoveControls();
+                        //    myStamina = myStamina - 25 * Time.deltaTime;
+                        //    myTimeSinceLastSprint = Time.fixedTime;
+                        //}
                         else
                         {
                             //Normal State
@@ -194,16 +200,13 @@ namespace Completed
                             if (Time.fixedTime - myTimeSinceLastSprint > 1) {
                                 myStamina = Math.Min(myStamina + Time.deltaTime * 15, MAX_PLAYER_STAMINA);
                             }
-                            Speed = AdjustSpeedAndLightForThickGrass(NOT_DASHING_SPEED);
+                            Speed = AdjustSpeedAndLightForThickGrass(NOT_DASHING_SPEED + myAdditionalSpeed);
                             DoRegularMoveControls();
                         }
                     }
                     else if (myDashTimer > 0f)
                     {
                         //In dash
-
-
-
                         myRenderer.material.SetColor("_Color", Color.red);
                         myDashTimer -= Time.deltaTime;
                         Vector3 movement = new Vector3(myDashDirection.x, myDashDirection.y, 0);
@@ -464,12 +467,32 @@ namespace Completed
                 
                 myRenderer.material.SetColor("_Color", Color.black);
             }
-            if (other.tag == "Torch" || other.tag == "Bunny" || other.tag == "Trap" || other.tag == "Bomb") {
+            else if (other.tag == "Torch" || other.tag == "Bunny" || other.tag == "Trap" || other.tag == "Bomb") {
                 myCurrentCollisions.Add(other.gameObject);
             }
-            if (other.tag == "ThickGrass")
+            else if (other.tag == "ThickGrass")
             {
                 myCurrentThickGrass  = other.GetComponent<ThickGrassScript>();
+            }
+            else if (other.tag == "WearableItem")
+            {
+                IWearableItem acquiredItem = other.GetComponent<IWearableItem>();
+
+                if (acquiredItem == null) {
+                    throw new Exception("Why is this NON-IWearable tagged as one! / possibly something else that's buggy?");
+                }
+
+                acquiredItem.MakePickUpNoise();
+                if (acquiredItem.TypeOfItem == eWearableItemType.speed)
+                {
+                    myAdditionalSpeed += acquiredItem.Magnitude;
+                }
+                else if (acquiredItem.TypeOfItem == eWearableItemType.lives) {
+                    myAdditionalLives += (int) acquiredItem.Magnitude;
+                }
+                //Get rid the of object, so you can't keep picking it up!
+                Destroy(other.gameObject);
+
             }
         }
 

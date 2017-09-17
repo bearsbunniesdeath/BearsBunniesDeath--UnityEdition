@@ -116,6 +116,21 @@ namespace Assets.Scripts.Map
                 DensityAreas.Add(new DensityArea(1f, botLeft, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, botRight, DensityArea.eMapItems.terrainObstacles));
             }
+            else if (index == 8)
+            {
+                //Shoe Throne
+                List<MapPosition> leftPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 1), new MapPosition(1, 6));
+                List<MapPosition> rightPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 1), new MapPosition(6, 6));
+                List<MapPosition> topChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 4), new MapPosition(4, 6));
+                List<MapPosition> botChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 1), new MapPosition(4, 1));
+
+                DensityAreas.Add(new DensityArea(1f, leftPillar, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, rightPillar, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, topChunk, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, botChunk, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(4, 2)}, DensityArea.eMapItems.shoes));
+            }
+
 
             string json = JsonUtility.ToJson(this,true);
             string filePath = "/JSON";

@@ -101,6 +101,9 @@ public abstract class MapBlock
         else if (type == DensityArea.eMapItems.thickGrass)
         {
             return new GameObject[] { MapBuilder.instance.thickGrass };
+        } else if (type == DensityArea.eMapItems.shoes)
+        {
+            return new GameObject[] { MapBuilder.instance.runningShoes };
         } else {
             return null;
         }
@@ -121,6 +124,7 @@ public class DensityArea
         pathTile,
         bomb,
         armedBomb,
+        shoes,
         thickGrass
 
     }

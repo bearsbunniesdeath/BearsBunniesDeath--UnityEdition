@@ -28,6 +28,7 @@ public class BearBehaviour : NPCBehaviour {
     //Determines aggro range of bear
     private float TRACKING_PLAYER_RANGE = 6;  //First level of aggro
     private float HUNTING_PLAYER_RANGE = 4;   //Second level of aggro
+    private float CHARGE_PLAYER_RANGE = 4;   //threshold to charge
     private float DEAGGRO_PLAYER_RANGE = 9;   //The range at which the bear will stop tracking/hunting player 
 
     private float HUNTING_BUNNY_RANGE = 6;
@@ -124,7 +125,7 @@ public class BearBehaviour : NPCBehaviour {
     {
         var heading = player.position - transform.position;
         var distance = heading.magnitude;
-        if (distance < 6)
+        if (distance < CHARGE_PLAYER_RANGE)
         {
             //Want long shots only
             return;
