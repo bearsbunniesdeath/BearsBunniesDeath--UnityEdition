@@ -92,6 +92,8 @@ MonoBehaviour:
   bombObject: {fileID: 1000011194850764, guid: d655f82e6686d9142bf622729785041f, type: 2}
   armedBombObject: {fileID: 1000011053073784, guid: 35202ba34d85c3b48b6b4cd61fa65e91,
     type: 2}
+  runningShoes: {fileID: 1120078910746644, guid: 6fb6edb46fa2cc446a407a5bf70aec6d,
+    type: 2}
   doodads:
   - {fileID: 1000013206920236, guid: add6cbad9fd82e343bda3bdf49216d9e, type: 2}
   - {fileID: 1000012112875622, guid: 8c69fe95064abd547bfd8e8d9144154d, type: 2}
