@@ -42,6 +42,7 @@ public class MapBuilder : MonoBehaviour {
     public GameObject pathTile;
     public GameObject[] terrainObjects;                             //Array of terrain objects (tree, rocks, etc)
     public GameObject thickGrass;
+    public GameObject berryBush;
     public GameObject StartObject;                             //temp icon "S" to show the start
     public GameObject FinishObject;                             //temp icon "F" to show the Finish
     public GameObject TorchObject;                             //temp icon "F" to show the Finish
@@ -107,6 +108,7 @@ public class MapBuilder : MonoBehaviour {
         List<GameObject> objs = floorTiles.Concat(terrainObjects).ToList();
         objs.Add(pathTile);
         objs.Add(thickGrass);
+        objs.Add(berryBush);
         objs.Add(StartObject);
         objs.Add(FinishObject);
         objs.Add(bear);

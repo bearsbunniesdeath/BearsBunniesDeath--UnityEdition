@@ -18,7 +18,9 @@ public class BearBehaviour : NPCBehaviour {
         eChargingTowardPlayer,
         eHuntingBunny,
         eEatingBunny,
-        eStuckInTrap
+        eStuckInTrap,
+        eHuntingBerries,
+        eEatingBerries
     }
 
     //TODO: Probably move this to it's own class
