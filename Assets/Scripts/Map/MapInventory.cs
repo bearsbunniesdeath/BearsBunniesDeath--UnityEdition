@@ -23,5 +23,10 @@ namespace Assets.Scripts.Map
 
         }
 
+        public static List<Transform> LocateTransforms<T>() where T: MonoBehaviour {
+            T[] behaviors = (T[])UnityEngine.Object.FindObjectsOfType(typeof(T)) as T[];
+            return behaviors.Select(b => b.GetComponentInParent<Transform>()).ToList();
+        } 
+
     }
 }
