@@ -9,11 +9,13 @@ namespace Assets.Scripts.Items
     class runningShoesScript
         : MonoBehaviour, IWearableItem
     {
+        public AudioClip PickUpSound;
+
         public float Magnitude
         {
             get
             {
-                return 1;
+                return 0.5f;
             }
         }
 
@@ -27,7 +29,8 @@ namespace Assets.Scripts.Items
 
         public void MakePickUpNoise()
         {
-            //throw new NotImplementedException();
+            //Need to use a the static audio source, because this is gonna die now!
+            AudioSource.PlayClipAtPoint(PickUpSound, transform.position);
         }
     }
 

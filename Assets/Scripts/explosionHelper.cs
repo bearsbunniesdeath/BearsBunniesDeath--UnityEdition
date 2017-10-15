@@ -18,6 +18,10 @@ namespace Assets.Scripts
 
             List<GameObject> collection = explosionHelper.GetExplodableGameObjectsFromColliders(toExplode);
 
+            if (collection.Contains(source)) {
+                collection.Remove(source);
+            }
+
             foreach (GameObject go in collection)
             {
                 Vector2 heading = go.transform.position - source.transform.position;
@@ -55,7 +59,7 @@ namespace Assets.Scripts
         }
 
         public static List<GameObject>  GetExplodableGameObjectsFromColliders(Collider2D[] colliders) {
-            List<String> ExplodableTags = new List<string>() {"Bear","Torch", "Trap", "Bomb", "Bunny"};
+            List<String> ExplodableTags = new List<string>() {"Bear","Torch", "Trap", "Bomb", "Bunny", "Player"};
 
             List<GameObject> returnVal = new List<GameObject>();
 

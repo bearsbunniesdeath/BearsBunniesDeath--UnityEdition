@@ -270,7 +270,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -361,6 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff301178fd6e9654a94c548010b833a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reviveSound: {fileID: 8300000, guid: d1b38f466e3965641992a2122981c69b, type: 3}
+  dashSound: {fileID: 8300000, guid: 93b08b78c39e06147aeae3192d5c7bbc, type: 3}
   myStamina: 100
   sprintRateTest: 0
   IsDead: 0

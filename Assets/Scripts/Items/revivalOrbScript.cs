@@ -9,6 +9,8 @@ namespace Assets.Scripts.Items
     class revivalOrbScript
         : MonoBehaviour, IWearableItem
     {
+        public AudioClip PickUpSoundClip;
+
         public float Magnitude
         {
             get
@@ -27,7 +29,8 @@ namespace Assets.Scripts.Items
 
         public void MakePickUpNoise()
         {
-            //throw new NotImplementedException();
+            //Need to use a the static audio source, because this is gonna die now!
+            AudioSource.PlayClipAtPoint(PickUpSoundClip, transform.position);
         }
     }
 

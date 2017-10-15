@@ -14,6 +14,7 @@ namespace Completed
     {
 
         public AudioClip reviveSound;				
+        public AudioClip dashSound;
         //		private Animator animator;					//Used to store a reference to the Player's animator component.
 
         private Image myStaminaBar;
@@ -85,7 +86,8 @@ namespace Completed
             IsDead = false;
             
             mySecondWindCount = -1;
-
+            myAdditionalLives = 0;
+            myAdditionalSpeed = 0;
             transform.rotation = new Quaternion(0, 0, 0,0);
             GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             GetComponent<Rigidbody2D>().angularVelocity = 0;
@@ -168,7 +170,6 @@ namespace Completed
                     if (myAdditionalLives > 0)
                     {
                         myRevivalDelayTime = REVIVAL_DELAY;
-                        myAdditionalLives -= 1;
                     }
                 }
             }
@@ -193,6 +194,13 @@ namespace Completed
 
             //Revival Explosion
             IsDead = false;
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+            GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            GetComponent<Rigidbody2D>().angularVelocity = 0;
+            if (rb2D != null)
+            {
+                rb2D.freezeRotation = true;
+            }
             myAdditionalLives -= 1;
         }
 
@@ -215,7 +223,7 @@ namespace Completed
                         }
                         else
                         {
-                            myAudioSource.Play();
+                            SoundEffectHelper.MakeNoise(myAudioSource, dashSound);
                             //Full power Dash
                             myStamina = myStamina - DASH_ENERGY;
                             myDashTimer = DASH_TIME;
@@ -552,7 +560,7 @@ namespace Completed
             //TODO: Make a HUD Script instead of finding the text objects
             if (GameObject.Find("DeadText") != null && GameObject.Find("DeadText").GetComponent<Text>() != null) {
                 Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
-                deadtext.text = "Dead";
+                deadtext.text = "DEAD.";
                 deadtext.rectTransform.localScale = new Vector3(4, 1, 1);
                 if (myAdditionalLives > 0) {
                     deadtext.text = "dead?";
