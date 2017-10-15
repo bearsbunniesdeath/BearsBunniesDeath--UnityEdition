@@ -56,6 +56,7 @@ public class MapBuilder : MonoBehaviour {
     public GameObject bombObject;
     public GameObject armedBombObject;
     public GameObject runningShoes;
+    public GameObject reviveItem;
     public GameObject[] doodads;
     public Count countOfTerrainObjects;
     public Count numberOfBears;                                     //Number of bears to spawn on the map
@@ -120,6 +121,7 @@ public class MapBuilder : MonoBehaviour {
         objs.Add(bombObject);
         objs.Add(armedBombObject);
         objs.Add(runningShoes);
+        objs.Add(reviveItem);
         foreach (GameObject item in doodads) {
             objs.Add(item);
         }

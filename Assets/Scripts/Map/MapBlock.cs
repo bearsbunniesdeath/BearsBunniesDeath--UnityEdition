@@ -76,10 +76,12 @@ public abstract class MapBlock
     }
 
     private GameObject[] DensityAreaObjTypeToGameObject(DensityArea.eMapItems type) {
-        if (type == DensityArea.eMapItems.bearTrap) {
+        if (type == DensityArea.eMapItems.bearTrap)
+        {
             return new GameObject[] { MapBuilder.instance.trap };
         }
-        else if (type == DensityArea.eMapItems.arrowTrap) {
+        else if (type == DensityArea.eMapItems.arrowTrap)
+        {
             return new GameObject[] { MapBuilder.instance.arrowShooter };
         }
         else if (type == DensityArea.eMapItems.terrainObstacles)
@@ -101,10 +103,17 @@ public abstract class MapBlock
         else if (type == DensityArea.eMapItems.thickGrass)
         {
             return new GameObject[] { MapBuilder.instance.thickGrass };
-        } else if (type == DensityArea.eMapItems.shoes)
+        }
+        else if (type == DensityArea.eMapItems.shoes)
         {
             return new GameObject[] { MapBuilder.instance.runningShoes };
-        } else {
+        }
+        else if (type == DensityArea.eMapItems.reviveItem)
+        {
+            return new GameObject[] { MapBuilder.instance.reviveItem};
+        }
+        else
+        {
             return null;
         }
     }
@@ -125,6 +134,7 @@ public class DensityArea
         bomb,
         armedBomb,
         shoes,
+        reviveItem,
         thickGrass
 
     }

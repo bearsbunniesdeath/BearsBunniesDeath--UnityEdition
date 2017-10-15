@@ -13,14 +13,7 @@ namespace Completed
 	public class PlayerBehaviour : MonoBehaviour
     {
 
-        //		public AudioClip moveSound1;				//1 of 2 Audio clips to play when player moves.
-        //		public AudioClip moveSound2;				//2 of 2 Audio clips to play when player moves.
-        //		public AudioClip eatSound1;					//1 of 2 Audio clips to play when player collects a food object.
-        //		public AudioClip eatSound2;					//2 of 2 Audio clips to play when player collects a food object.
-        //		public AudioClip drinkSound1;				//1 of 2 Audio clips to play when player collects a soda object.
-        //		public AudioClip drinkSound2;				//2 of 2 Audio clips to play when player collects a soda object.
-        //		public AudioClip gameOverSound;				//Audio clip to play when player dies.
-        //
+        public AudioClip reviveSound;				
         //		private Animator animator;					//Used to store a reference to the Player's animator component.
 
         private Image myStaminaBar;
@@ -35,6 +28,10 @@ namespace Completed
         //Upgradeable stats
         private float myAdditionalSpeed = 0;
         private int myAdditionalLives = 0;
+
+        //Revival Stuff
+        const float REVIVAL_DELAY = 3.00f;
+        private float myRevivalDelayTime = 0f;
 
         private ThickGrassScript myCurrentThickGrass;
 
@@ -152,110 +149,30 @@ namespace Completed
             if (!Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Space) || myDashTimer > 0f) {
                 ReleaseAllItems();
             }
-                  
+
             if (!IsDead)
             {
-                if (myStamina >= 0 && mySecondWindCount < 0)
+                AliveUpdate(); }
+            else {
+                if (myRevivalDelayTime > 0f)
                 {
-                    if (myDashTimer < -DASH_STUN_TIME)
-                    {
-                        myRenderer.material.SetColor("_Color", Color.white);
-                        //Has been stunned long enough dash again
-
-                        if (DidDashTapInput())
-                        {
-                    
-                            if (myStamina < 25)
-                            {
-                                //Just a little spurt of what's left in stamina
-                                myStamina = -0.1f;
-                                myDashTimer = DASH_TIME * myStamina / DASH_ENERGY;
-                            }
-                            else
-                            {
-                                myAudioSource.Play();
-                                 //Full power Dash
-                                 myStamina = myStamina - DASH_ENERGY;
-                                myDashTimer = DASH_TIME;
-                            }
-                        }
-                        //For now we are not having a sprint, mechanism only dives
-
-                        //else if (Input.GetKey(KeyCode.Space))
-                        //{
-                        //    myRenderer.material.SetColor("_Color", Color.blue);
-                        //    Speed = AdjustSpeedAndLightForThickGrass(SPRINT_SPEED);
-                        //    DoRegularMoveControls();
-                        //    myStamina = myStamina - 25 * Time.deltaTime;
-                        //    myTimeSinceLastSprint = Time.fixedTime;
-                        //}
-                        else
-                        {
-                            //Normal State
-                            if (Input.GetKey(KeyCode.LeftShift))
-                            {
-                                LookForItemsToHold();
-                            }
-
-                            if (Time.fixedTime - myTimeSinceLastSprint > 1) {
-                                myStamina = Math.Min(myStamina + Time.deltaTime * 15, MAX_PLAYER_STAMINA);
-                            }
-                            Speed = AdjustSpeedAndLightForThickGrass(NOT_DASHING_SPEED + myAdditionalSpeed);
-                            DoRegularMoveControls();
-                        }
-                    }
-                    else if (myDashTimer > 0f)
-                    {
-                        //In dash
-                        myRenderer.material.SetColor("_Color", Color.red);
-                        myDashTimer -= Time.deltaTime;
-                        Vector3 movement = new Vector3(myDashDirection.x, myDashDirection.y, 0);
-                        RaycastHit2D hit = Physics2D.Raycast(transform.position, movement, 1, 1 << LayerMask.NameToLayer("Obstacles"));
-                        if (hit.collider == null || hit.distance > 0.1)
-                        {
-                            movement *= Time.deltaTime;
-                            transform.Translate(movement);
-                        }
-
-                    }
-                    else
-                    {
-                        //in stun
-                        myRenderer.material.SetColor("_Color", Color.yellow);
-                        myDashTimer -= Time.deltaTime;
-                        Speed = DASH_STUN_SPEED;
-                        DoRegularMoveControls();
+                    myRevivalDelayTime -= Time.deltaTime;
+                    //Time JUST expired, commence revival!
+                    if (myRevivalDelayTime < 0 && myRevivalDelayTime + Time.deltaTime > 0) {
+                        Revive();
+                        Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
+                        deadtext.text = "";
                     }
                 }
                 else {
-                    //Tired
-                    Speed = TIRED_SPEED;
-                    DoRegularMoveControls();
-                    myRenderer.material.SetColor("_Color", Color.green);
-                    if (mySecondWindCount < 0)
+                    if (myAdditionalLives > 0)
                     {
-                        //First time here (reset)
-                        mySecondWindCount = MAX_SECOND_WIND_COUNT;
-                    }
-                    else {
-                        //myTiredTimer = myTiredTimer - (Time.deltaTime * 10f);
-                        if (Input.GetKeyDown(KeyCode.Space))
-                        {
-                            mySecondWindCount -= 1;
-                        }
-                        if (mySecondWindCount < 0) {
-                            //Break out of tired mode
-                            myStamina = DASH_ENERGY*2+1;
-                        }
-                    }
-                    if (mySecondWindBar != null)
-                    {
-                        mySecondWindBar.rectTransform.localScale = new Vector3(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0), 1, 1);
+                        myRevivalDelayTime = REVIVAL_DELAY;
+                        myAdditionalLives -= 1;
                     }
                 }
-
-               
             }
+            
 
             if (myStaminaBar != null){
                 myStaminaBar.rectTransform.localScale = new Vector3(myStamina / (float)MAX_PLAYER_STAMINA, 1, 1);
@@ -266,6 +183,122 @@ namespace Completed
                 heldObject.ObjectTransform.position = this.transform.position;
             }
 
+        }
+
+        private void Revive()
+        {
+            Debug.Log("REVIVAL!");
+
+            explosionHelper.Explode(reviveSound, myAudioSource, gameObject, 1500f, 5);
+
+            //Revival Explosion
+            IsDead = false;
+            myAdditionalLives -= 1;
+        }
+
+        private void AliveUpdate() {
+            if (myStamina >= 0 && mySecondWindCount < 0)
+            {
+                if (myDashTimer < -DASH_STUN_TIME)
+                {
+                    myRenderer.material.SetColor("_Color", Color.white);
+                    //Has been stunned long enough dash again
+
+                    if (DidDashTapInput())
+                    {
+
+                        if (myStamina < 25)
+                        {
+                            //Just a little spurt of what's left in stamina
+                            myStamina = -0.1f;
+                            myDashTimer = DASH_TIME * myStamina / DASH_ENERGY;
+                        }
+                        else
+                        {
+                            myAudioSource.Play();
+                            //Full power Dash
+                            myStamina = myStamina - DASH_ENERGY;
+                            myDashTimer = DASH_TIME;
+                        }
+                    }
+                    //For now we are not having a sprint, mechanism only dives
+
+                    //else if (Input.GetKey(KeyCode.Space))
+                    //{
+                    //    myRenderer.material.SetColor("_Color", Color.blue);
+                    //    Speed = AdjustSpeedAndLightForThickGrass(SPRINT_SPEED);
+                    //    DoRegularMoveControls();
+                    //    myStamina = myStamina - 25 * Time.deltaTime;
+                    //    myTimeSinceLastSprint = Time.fixedTime;
+                    //}
+                    else
+                    {
+                        //Normal State
+                        if (Input.GetKey(KeyCode.LeftShift))
+                        {
+                            LookForItemsToHold();
+                        }
+
+                        if (Time.fixedTime - myTimeSinceLastSprint > 1)
+                        {
+                            myStamina = Math.Min(myStamina + Time.deltaTime * 15, MAX_PLAYER_STAMINA);
+                        }
+                        Speed = AdjustSpeedAndLightForThickGrass(NOT_DASHING_SPEED + myAdditionalSpeed);
+                        DoRegularMoveControls();
+                    }
+                }
+                else if (myDashTimer > 0f)
+                {
+                    //In dash
+                    myRenderer.material.SetColor("_Color", Color.red);
+                    myDashTimer -= Time.deltaTime;
+                    Vector3 movement = new Vector3(myDashDirection.x, myDashDirection.y, 0);
+                    RaycastHit2D hit = Physics2D.Raycast(transform.position, movement, 1, 1 << LayerMask.NameToLayer("Obstacles"));
+                    if (hit.collider == null || hit.distance > 0.1)
+                    {
+                        movement *= Time.deltaTime;
+                        transform.Translate(movement);
+                    }
+
+                }
+                else
+                {
+                    //in stun
+                    myRenderer.material.SetColor("_Color", Color.yellow);
+                    myDashTimer -= Time.deltaTime;
+                    Speed = DASH_STUN_SPEED;
+                    DoRegularMoveControls();
+                }
+            }
+            else
+            {
+                //Tired
+                Speed = TIRED_SPEED;
+                DoRegularMoveControls();
+                myRenderer.material.SetColor("_Color", Color.green);
+                if (mySecondWindCount < 0)
+                {
+                    //First time here (reset)
+                    mySecondWindCount = MAX_SECOND_WIND_COUNT;
+                }
+                else
+                {
+                    //myTiredTimer = myTiredTimer - (Time.deltaTime * 10f);
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        mySecondWindCount -= 1;
+                    }
+                    if (mySecondWindCount < 0)
+                    {
+                        //Break out of tired mode
+                        myStamina = DASH_ENERGY * 2 + 1;
+                    }
+                }
+                if (mySecondWindBar != null)
+                {
+                    mySecondWindBar.rectTransform.localScale = new Vector3(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0), 1, 1);
+                }
+            }
         }
 
         public bool IsInThickGrass()
@@ -466,6 +499,10 @@ namespace Completed
                 }                
                 
                 myRenderer.material.SetColor("_Color", Color.black);
+                if (IsDead) {
+                    //Add bears so they can get blown away by a revive
+                    myCurrentCollisions.Add(other.gameObject);
+                }
             }
             else if (other.tag == "Torch" || other.tag == "Bunny" || other.tag == "Trap" || other.tag == "Bomb") {
                 myCurrentCollisions.Add(other.gameObject);
@@ -498,6 +535,10 @@ namespace Completed
 
         public void Kill()
         {
+            if (IsDead) {
+                return;
+            }
+
             IsDead = true;
             //TODO: Explode any bombs in hands
             //GameObject maybeBombInHand = myHeldObjects.Find(o => o.TypeOfItem == eItemType.bomb)
@@ -505,9 +546,17 @@ namespace Completed
             //Unfreeze rotation for comedic effect
             rb2D.freezeRotation = false;
 
+            //TODO: Check for additional lives
+            //Start revival timer, do some spooky sound effects, then explode with revival power!!
+
+            //TODO: Make a HUD Script instead of finding the text objects
             if (GameObject.Find("DeadText") != null && GameObject.Find("DeadText").GetComponent<Text>() != null) {
                 Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
+                deadtext.text = "Dead";
                 deadtext.rectTransform.localScale = new Vector3(4, 1, 1);
+                if (myAdditionalLives > 0) {
+                    deadtext.text = "dead?";
+                }
             }
         }
 

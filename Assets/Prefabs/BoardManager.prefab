@@ -94,11 +94,13 @@ MonoBehaviour:
     type: 2}
   runningShoes: {fileID: 1120078910746644, guid: 6fb6edb46fa2cc446a407a5bf70aec6d,
     type: 2}
+  reviveItem: {fileID: 1991649705481768, guid: 3416f3c9177a6ae43b127fdbac53fa71, type: 2}
   doodads:
   - {fileID: 1000013206920236, guid: add6cbad9fd82e343bda3bdf49216d9e, type: 2}
   - {fileID: 1000012112875622, guid: 8c69fe95064abd547bfd8e8d9144154d, type: 2}
   - {fileID: 1000012958241216, guid: d74f4a70e3d827f4e83c47248736091a, type: 2}
   - {fileID: 1209323212291642, guid: d0b5e6aa550f1c74c9cf64da5268b0a5, type: 2}
+  - {fileID: 1281248835071888, guid: 5494d9c6096298240b343a093f1d7237, type: 2}
   countOfTerrainObjects:
     minimum: 100
     maximum: 100

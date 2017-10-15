@@ -136,38 +136,10 @@ public class bombScript : MonoBehaviour, IHoldableObject {
     private void Explode()
     {
 
-        SoundEffectHelper.MakeNoise(myAudioSource, ExplosionSound);
         myLight.intensity = 1.0f;
 
-        foreach (GameObject go in myCurrentCollisions) {
-            Vector2 heading = go.transform.position - gameObject.transform.position;
-            if (heading.x == 0 && heading.y == 0) {
-                //Avoid errors by having a random angle
-                heading = new Vector2(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
-            }
+        explosionHelper.Explode(ExplosionSound, myAudioSource, gameObject, ForceMagnitude, 1);
 
-            Vector2 direction = heading / heading.magnitude;
-
-            //For now just get a constant magnitude
-            if (go.GetComponent<Rigidbody2D>() != null) {
-
-                if (go.GetComponent<BearBehaviour>() != null) {
-                    BearBehaviour explodedBear = go.GetComponent<BearBehaviour>();
-                    explodedBear.Stun();
-                }
-
-                if (go.GetComponent<PlayerBehaviour>() != null)
-                {
-                    PlayerBehaviour explodedplayer = go.GetComponent<PlayerBehaviour>();
-                    if (!explodedplayer.myIsInvincible) {
-                        explodedplayer.Kill();
-                    }
-                }
-
-                go.GetComponent<Rigidbody2D>().AddForce(ForceMagnitude * direction);
-            }
-
-        }
         IsSet = false;
         GetComponent<SpriteRenderer>().sprite = null;
 
