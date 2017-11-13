@@ -132,18 +132,34 @@ namespace Assets.Scripts.Map
             }
             else if (index == 9)
             {
-                //Shoe Throne
-                List<MapPosition> leftPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 1), new MapPosition(1, 6));
-                List<MapPosition> rightPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 1), new MapPosition(6, 6));
-                List<MapPosition> topChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 4), new MapPosition(4, 6));
-                List<MapPosition> botChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 1), new MapPosition(4, 1));
+                //Revival Throne (encased)
+                List<MapPosition> leftPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
+                List<MapPosition> rightPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
+                List<MapPosition> topChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 0), new MapPosition(4, 0));
+                List<MapPosition> botChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 7), new MapPosition(4, 7));
 
                 DensityAreas.Add(new DensityArea(1f, leftPillar, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, rightPillar, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, topChunk, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, botChunk, DensityArea.eMapItems.terrainObstacles));
-                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(4, 2) }, DensityArea.eMapItems.reviveItem));
+
+                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(1, 0), new MapPosition(1, 2), new MapPosition(1, 5), new MapPosition(1, 7) }, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(6, 0), new MapPosition(6, 2), new MapPosition(6, 5), new MapPosition(6, 7) }, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(4, 4) }, DensityArea.eMapItems.reviveItem));
             }
+            else if (index == 10)
+            {
+                //One Way intersection
+                List<MapPosition> leftPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 0), new MapPosition(2, 7));
+                List<MapPosition> rightPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(5, 0), new MapPosition(5, 7));
+                List<MapPosition> leftChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 3), new MapPosition(1, 4));
+                List<MapPosition> rightChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 3), new MapPosition(7, 4));
+
+                DensityAreas.Add(new DensityArea(1f, leftPillar, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, rightPillar, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, leftChunk, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(1f, rightChunk, DensityArea.eMapItems.terrainObstacles));
+             }
 
 
             string json = JsonUtility.ToJson(this,true);
