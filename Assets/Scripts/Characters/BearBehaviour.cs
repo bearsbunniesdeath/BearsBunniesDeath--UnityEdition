@@ -34,6 +34,7 @@ public class BearBehaviour : NPCBehaviour {
     private float DEAGGRO_PLAYER_RANGE = 9;   //The range at which the bear will stop tracking/hunting player 
 
     private float HUNTING_BUNNY_RANGE = 6;
+    private float HUNTING_BERRIES_RANGE = 6;
     private BunnyBehaviour myHuntedBunnyScript;
 
     private float POUNCE_DETECT_RANGE = 2; //Units distance
@@ -109,6 +110,11 @@ public class BearBehaviour : NPCBehaviour {
                 else
                     myStuckTimeRemaining -= Time.deltaTime;
                 break;
+            case BehaviourType.eHuntingBerries:
+                MoveAlongPath(3f * Time.deltaTime, 0.2f);
+                break;
+            case BehaviourType.eEatingBerries:
+                break; //Nothing really to do here :D
         }                    
     }
 
@@ -226,12 +232,21 @@ public class BearBehaviour : NPCBehaviour {
                 Navigator.StartPathBetween(transform.position, ClosestBunny().position, OnPathCalculated);
             }
         }
+        else if (behaviour == BehaviourType.eHuntingBerries)
+        {
+            Transform maybeBush = ClosestBerryBush();
+            if (maybeBush != null)
+            {
+                Navigator.StartPathBetween(transform.position, maybeBush.position, OnPathCalculated);
+            }
+        }
     }
 
     protected override void UpdateBehaviour()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
         float distanceToClosestBunny = DistanceToClosestBunny();
+        float distanceToClosestBerryBush = DistanceToClosestBerryBush();
 
         //NOTE: Order matters for each behaviour 
         switch (behaviour)
@@ -244,6 +259,8 @@ public class BearBehaviour : NPCBehaviour {
                     SoundEffectHelper.MakeNoise(myAudioSource, PounceNoise);
                     UpdateBehaviour(BehaviourType.eTrackingPlayer);
                 }
+                else if (distanceToClosestBerryBush <= HUNTING_BERRIES_RANGE)
+                    UpdateBehaviour(BehaviourType.eHuntingBerries);
                 else if (UnityEngine.Random.Range(0f, 1f) <= 0.25)
                     //25% chance of roaming
                     UpdateBehaviour(BehaviourType.eRoaming);
@@ -255,6 +272,8 @@ public class BearBehaviour : NPCBehaviour {
                     SoundEffectHelper.MakeNoise(myAudioSource,PounceNoise);
                     UpdateBehaviour(BehaviourType.eTrackingPlayer);
                 }
+                else if (distanceToClosestBerryBush <= HUNTING_BERRIES_RANGE)
+                    UpdateBehaviour(BehaviourType.eHuntingBerries);
                 else if (UnityEngine.Random.Range(0f, 1f) <= 0.05)
                     //5% chance of going idle
                     UpdateBehaviour(BehaviourType.eIdle);
@@ -286,6 +305,21 @@ public class BearBehaviour : NPCBehaviour {
                 break;
             case BehaviourType.eStuckInTrap:
                 break;
+            case BehaviourType.eHuntingBerries:
+                if (distanceToClosestBunny <= HUNTING_BUNNY_RANGE)
+                    UpdateBehaviour(BehaviourType.eHuntingBunny);
+                else if (distanceToPlayer <= TRACKING_PLAYER_RANGE)
+                {
+                    SoundEffectHelper.MakeNoise(myAudioSource, PounceNoise);
+                    UpdateBehaviour(BehaviourType.eTrackingPlayer);
+                }
+                break;
+            case BehaviourType.eEatingBerries:
+                if (UnityEngine.Random.Range(0f, 1f) <= 0.3)
+                {
+                    UpdateBehaviour(BehaviourType.eRoaming);
+                }
+                break;
         }
     }
 
@@ -294,7 +328,7 @@ public class BearBehaviour : NPCBehaviour {
         if (this.behaviour != behaviour)
         {
             this.behaviour = behaviour;
-            if (behaviour == BehaviourType.eTrackingPlayer || behaviour == BehaviourType.eHuntingPlayer || behaviour == BehaviourType.eHuntingBunny)
+            if (behaviour == BehaviourType.eTrackingPlayer || behaviour == BehaviourType.eHuntingPlayer || behaviour == BehaviourType.eHuntingBunny || behaviour == BehaviourType.eHuntingBerries)
             {
                 //Bear should update path more frequently
                 ChangeInvokeRate(RepeatingMethod.UpdatePath, 0f, 0.5f);
@@ -320,6 +354,12 @@ public class BearBehaviour : NPCBehaviour {
             }
             else if (behaviour == BehaviourType.eEatingBunny)
             {
+                SoundEffectHelper.MakeNoise(myAudioSource, EatingNoise);
+                myAnimator.Play("EatingBunny");
+            }
+            else if (behaviour == BehaviourType.eEatingBerries)
+            {
+                //TODO: Make noise and/or animation for eating berries?
                 SoundEffectHelper.MakeNoise(myAudioSource, EatingNoise);
                 myAnimator.Play("EatingBunny");
             }
@@ -351,6 +391,11 @@ public class BearBehaviour : NPCBehaviour {
             Destroy(collision.gameObject);
             myStuckTimeRemaining = MAX_TIME_IN_TRAP;
         }
+        if (collision.tag == "BerryBush")
+        {
+            UpdateBehaviour(BehaviourType.eEatingBerries);
+            Destroy(collision.gameObject);
+        }
     }
 
     //TODO: Move all this out of here
@@ -370,6 +415,15 @@ public class BearBehaviour : NPCBehaviour {
         if (reachableBunnies.Count <= 0) { return float.MaxValue;} //Early exit (can't reach any bunnies)
         return reachableBunnies.Min(b => Vector2.Distance(transform.position, b.position));
     }  
+
+
+    //TODO: Generalize this type of behaviour
+    private float DistanceToClosestBerryBush()
+    {
+        List<Transform> bushes = MapInventory.LocateTransforms<BerryBushBehavior>().Where(b => Navigator.PathExistsBetween(Navigator.Vect2FromVect3(transform.position), Navigator.Vect2FromVect3(b.position))).ToList();
+        if (bushes.Count <= 0) { return float.MaxValue; } //Early exit (can't reach any bushes)
+        return bushes.Min(b => Vector2.Distance(transform.position, b.position));
+    }
 
     private Transform ClosestBunny()
     {
@@ -398,6 +452,11 @@ public class BearBehaviour : NPCBehaviour {
 
         }
         return closestBunny;
+    }
+
+    private Transform ClosestBerryBush()
+    {
+        return MapInventory.LocateTransforms<BerryBushBehavior>().Where(b => Navigator.PathExistsBetween(Navigator.Vect2FromVect3(transform.position), Navigator.Vect2FromVect3(b.position))).FirstOrDefault();
     }
 
     public void Stun() {
