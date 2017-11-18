@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using Assets.Scripts.Items;
 using Assets.Scripts.Environment;
+using System.Linq;
 
 namespace Completed
 {
@@ -47,7 +48,6 @@ namespace Completed
         public Rigidbody2D rb2D;
         private Collider2D myCollider;
         private Animator myAnimator;
-        List<GameObject> myCurrentCollisions = new List<GameObject>();
         List<IHoldableObject> myHeldObjects = new List<IHoldableObject>();
 
         private Vector2 myDashDirection;
@@ -89,6 +89,7 @@ namespace Completed
             myAdditionalLives = 0;
             myAdditionalSpeed = 0;
             transform.rotation = new Quaternion(0, 0, 0,0);
+            myHeldObjects.Clear();
             GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             GetComponent<Rigidbody2D>().angularVelocity = 0;
             if (rb2D != null) {
@@ -142,14 +143,12 @@ namespace Completed
 
 		private void Update ()
 		{
-            ItemHelper.RemoveNullItems(myCurrentCollisions);
-            ItemHelper.RemoveOutOfRangeItems(myCurrentCollisions, transform.position, 1f);
 
             myLight.range = myDefaultLightRange; //Reset the light, so it will be normal unless changed in AdjustSpeedAndLightForThickGrass()
             //TODO: Gradually brighten back to normal
 
-            if (!Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.Space) || myDashTimer > 0f) {
-                ReleaseAllItems();
+            if (Input.GetKeyDown(KeyCode.LeftShift)) {// || Input.GetKey(KeyCode.Space) || myDashTimer > 0f) {
+                ReleaseTopItemInStack();
             }
 
             if (!IsDead)
@@ -178,12 +177,29 @@ namespace Completed
             if (myStaminaBar != null){
                 myStaminaBar.rectTransform.localScale = new Vector3(myStamina / (float)MAX_PLAYER_STAMINA, 1, 1);
                 UpdateItemHUD();
-            }            
-
-            foreach (IHoldableObject heldObject in myHeldObjects) {
-                heldObject.ObjectTransform.position = this.transform.position;
             }
 
+            myHeldObjects = myHeldObjects.Where(o => ( o != null && o.ObjectTransform != null)).ToList();
+            foreach (IHoldableObject heldObject in myHeldObjects) {
+                if (heldObject.ObjectTransform != null)
+                {
+                    heldObject.ObjectTransform.position = this.transform.position;
+                }
+                else {
+                    Debug.Log("Why don't we have a Transform?");
+                }
+            }
+
+        }
+
+        private void ReleaseTopItemInStack()
+        {
+            if (myHeldObjects.Count > 0) {
+                IHoldableObject dropMe = myHeldObjects[myHeldObjects.Count - 1];
+                Debug.Log("DROPPED" + dropMe.ToString());
+                dropMe.IsHeld = false;
+                myHeldObjects.Remove(dropMe);
+            }
         }
 
         private void Revive()
@@ -241,11 +257,6 @@ namespace Completed
                     //}
                     else
                     {
-                        //Normal State
-                        if (Input.GetKey(KeyCode.LeftShift))
-                        {
-                            LookForItemsToHold();
-                        }
 
                         if (Time.fixedTime - myTimeSinceLastSprint > 1)
                         {
@@ -339,16 +350,13 @@ namespace Completed
             myHeldObjects.Clear();
         }
 
-        private void LookForItemsToHold()
+        private void AttemptToPickUpItem(GameObject go)
         {
-
-            //TODO: Use logic in bomb script to delete nulls (destroyed items) from myCurrentCollisions
 
             //Logic to see what I can hold
 
-            foreach (GameObject itemInReach in myCurrentCollisions) {
-                //Cast into IHoldable interface
-                IHoldableObject asHoldableIterface = (IHoldableObject)(itemInReach.GetComponent(typeof(IHoldableObject)));
+            //Cast into IHoldable interface
+                IHoldableObject asHoldableIterface = (IHoldableObject)(go.GetComponent(typeof(IHoldableObject)));
 
                 //As of now, the rule is one of each type
                 if ( !myHeldObjects.Exists(o => o.TypeOfItem == asHoldableIterface.TypeOfItem) && asHoldableIterface.IsHoldableInCurrentState) {
@@ -359,20 +367,10 @@ namespace Completed
                     myHeldObjects.Add(asHoldableIterface);
                 }
 
-            }
-
         }
 
         private void UpdateItemHUD()
         {
-            ////Change the alpha of the color of each image for visibility
-            //Color onColor = new Color(255, 255, 255, 255);
-            //Color offColor = new Color(255, 255, 255, 50);
-
-            //myBombHUD.color = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bomb)?onColor:offColor;
-            //myBunnyHUD.color = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bunny) ? onColor : offColor;
-            //myTorchHUD.color = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) ? onColor : offColor;
-            //myTrapHUD.color = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.trap) ? onColor : offColor;
 
             myBombHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bomb);
             myBunnyHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bunny);
@@ -395,66 +393,6 @@ namespace Completed
             }
             return false;
         }
-
-        private float GetSprintButtonRate()
-        {
-            if (Input.GetKeyDown(KeyCode.Space)) {
-                mySprintClickCountsPerTime += 1;
-                mySprintClickTimesArray.Add(Time.fixedTime);
-                if (mySprintClickTimesArray.Count > 10) {
-                    mySprintClickTimesArray.RemoveAt(0);
-                }
-            }
-
-            float rangeOfCheck = Time.fixedTime - SPRINT_BUTTON_CHECK_TIME;
-
-            int countInTimeRange = mySprintClickTimesArray.FindAll(delegate (float item)
-            {
-                return item > rangeOfCheck;
-            }).Count;
-
-            return countInTimeRange;
-            //returns amounts of sprint clicks in 1 second
-        }
-
-
-        //private void SpamToSprintBehaviour() {
-        //    float sprintRate = GetSprintButtonRate();
-        //    sprintRateTest = sprintRate;
-
-        //    if (sprintRate > 0 && myStamina > 0)
-        //    {
-        //        myStamina -= sprintRate * 2.5f * Time.deltaTime;
-        //    }
-        //    else
-        //    {
-        //        if (myStamina < MAX_PLAYER_STAMINA)
-        //        {
-        //            myStamina += STAMINA_INCREASE_RATE * Time.deltaTime;
-        //        }
-        //    }
-
-        //    if (myStamina > MED_PLAYER_STAMINA)
-        //    {
-        //        Speed = BASE_SPEED + SPEED_RANGE * sprintRate / 10;
-        //        myRenderer.material.SetColor("_Color", Color.white);
-        //    }
-        //    else if (myStamina > LOW_PLAYER_STAMINA)
-        //    {
-        //        //Speed is slower
-        //        Speed = BASE_SPEED + SPEED_RANGE * 0.6666f * sprintRate / 10;
-        //        myRenderer.material.SetColor("_Color", Color.red);
-        //    }
-        //    else
-        //    {
-        //        //TODO: DECIDE if we want have constant slow sleep for low stamina OR shorter range, and still use spacebar spamming
-        //        Speed = BASE_SPEED + SPEED_RANGE * 0.3333f * sprintRate / 10;
-        //        myRenderer.material.SetColor("_Color", Color.blue);
-        //    }
-
-        //    DoRegularMoveControls();
-
-        //}
 
         private void DoRegularMoveControls()
         {
@@ -507,13 +445,9 @@ namespace Completed
                 }                
                 
                 myRenderer.material.SetColor("_Color", Color.black);
-                if (IsDead) {
-                    //Add bears so they can get blown away by a revive
-                    myCurrentCollisions.Add(other.gameObject);
-                }
             }
             else if (other.tag == "Torch" || other.tag == "Bunny" || other.tag == "Trap" || other.tag == "Bomb") {
-                myCurrentCollisions.Add(other.gameObject);
+                AttemptToPickUpItem(other.gameObject);
             }
             else if (other.tag == "ThickGrass")
             {
@@ -570,9 +504,6 @@ namespace Completed
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (myCurrentCollisions.Contains(other.gameObject)) {
-                myCurrentCollisions.Remove(other.gameObject);
-            }
             if (other.tag == "ThickGrass")
             {
                 myCurrentThickGrass = null;

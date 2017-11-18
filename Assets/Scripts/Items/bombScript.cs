@@ -153,5 +153,8 @@ public class bombScript : MonoBehaviour, IHoldableObject {
         }
     }
 
- 
+    public void Drop()
+    {
+        IsHeld = false;
+    }
 }
