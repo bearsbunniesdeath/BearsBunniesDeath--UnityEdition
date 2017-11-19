@@ -16,6 +16,7 @@ TagManager:
   - Start
   - ThickGrass
   - WearableItem
+  - HUD
   layers:
   - Default
   - TransparentFX

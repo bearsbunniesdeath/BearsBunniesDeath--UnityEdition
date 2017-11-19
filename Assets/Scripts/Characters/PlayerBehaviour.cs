@@ -18,13 +18,8 @@ namespace Completed
         public AudioClip dashSound;
         //		private Animator animator;					//Used to store a reference to the Player's animator component.
 
-        private Image myStaminaBar;
-        private Text mySecondWindText;
-        private Image mySecondWindBar;
-        private Image myBombHUD;
-        private Image myBunnyHUD;
-        private Image myTorchHUD;
-        private Image myTrapHUD;
+        private HUDScript myHUD;
+
         public float myStamina ;
 
         //Upgradeable stats
@@ -48,6 +43,8 @@ namespace Completed
         public Rigidbody2D rb2D;
         private Collider2D myCollider;
         private Animator myAnimator;
+
+        private const int MAX_ITEMS = 4;
         List<IHoldableObject> myHeldObjects = new List<IHoldableObject>();
 
         private Vector2 myDashDirection;
@@ -97,9 +94,9 @@ namespace Completed
             }
 
             //TODO: Paint UI with a UI Manager
-            if (mySecondWindBar != null) {
-                mySecondWindBar.rectTransform.localScale = new Vector3(0, 1, 1);
-            }
+            //if (mySecondWindBar != null) {
+            //    mySecondWindBar.rectTransform.localScale = new Vector3(0, 1, 1);
+            //}
             myStamina = MAX_PLAYER_STAMINA;
         }
 
@@ -118,19 +115,9 @@ namespace Completed
             myDefaultLightRange = myLight.range;
             myDashTimer = -DASH_STUN_TIME - 1;
 
-            myStaminaBar = GameObject.Find("StaminaBar").GetComponent<Image>();
-            mySecondWindBar = GameObject.Find("SecondWindBar").GetComponent<Image>();
-            mySecondWindBar.rectTransform.localScale = new Vector3(0, 1, 1);
-
-            myBombHUD = GameObject.Find("BombHUD").GetComponent<Image>();
-            myBunnyHUD = GameObject.Find("BunnyHUD").GetComponent<Image>();
-            myTorchHUD = GameObject.Find("TorchHUD").GetComponent<Image>();
-            myTrapHUD = GameObject.Find("TrapHUD").GetComponent<Image>();
-
-            //TODO: If any of these doesn't exist, don't try to update HUD
-
-
             myStamina = MAX_PLAYER_STAMINA;
+
+            myHUD = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUDScript>();
         }
 
 
@@ -161,8 +148,7 @@ namespace Completed
                     //Time JUST expired, commence revival!
                     if (myRevivalDelayTime < 0 && myRevivalDelayTime + Time.deltaTime > 0) {
                         Revive();
-                        Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
-                        deadtext.text = "";
+                        myHUD.SetBigText("");
                     }
                 }
                 else {
@@ -171,12 +157,6 @@ namespace Completed
                         myRevivalDelayTime = REVIVAL_DELAY;
                     }
                 }
-            }
-            
-
-            if (myStaminaBar != null){
-                myStaminaBar.rectTransform.localScale = new Vector3(myStamina / (float)MAX_PLAYER_STAMINA, 1, 1);
-                UpdateItemHUD();
             }
 
             myHeldObjects = myHeldObjects.Where(o => ( o != null && o.ObjectTransform != null)).ToList();
@@ -190,6 +170,25 @@ namespace Completed
                 }
             }
 
+            UpdateHUD();
+
+        }
+
+        private void UpdateHUD()
+        {
+            myHUD.SetStaminaBar(myStamina / (float)MAX_PLAYER_STAMINA);
+            myHUD.SetSecondWindBar(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0));
+            UpdateItemHUD();
+        }
+
+        private void UpdateItemHUD()
+        {
+            List<eItemType> itemTypeList = new List<eItemType>();
+            foreach (IHoldableObject currItem in myHeldObjects) {
+                itemTypeList.Add(currItem.TypeOfItem);
+            }
+
+            myHUD.SetItemStack(itemTypeList);
         }
 
         private void ReleaseTopItemInStack()
@@ -313,10 +312,6 @@ namespace Completed
                         myStamina = DASH_ENERGY * 2 + 1;
                     }
                 }
-                if (mySecondWindBar != null)
-                {
-                    mySecondWindBar.rectTransform.localScale = new Vector3(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0), 1, 1);
-                }
             }
         }
 
@@ -358,8 +353,10 @@ namespace Completed
             //Cast into IHoldable interface
                 IHoldableObject asHoldableIterface = (IHoldableObject)(go.GetComponent(typeof(IHoldableObject)));
 
+            if (myHeldObjects.Contains(asHoldableIterface) || myHeldObjects.Count >= MAX_ITEMS ) { return; }
+
                 //As of now, the rule is one of each type
-                if ( !myHeldObjects.Exists(o => o.TypeOfItem == asHoldableIterface.TypeOfItem) && asHoldableIterface.IsHoldableInCurrentState) {
+                if ( !(myHeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) && asHoldableIterface.TypeOfItem == eItemType.torch) && asHoldableIterface.IsHoldableInCurrentState) {
                     if (!asHoldableIterface.IsHeld) {
                         asHoldableIterface.MakePickUpNoise();
                     }
@@ -367,15 +364,6 @@ namespace Completed
                     myHeldObjects.Add(asHoldableIterface);
                 }
 
-        }
-
-        private void UpdateItemHUD()
-        {
-
-            myBombHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bomb);
-            myBunnyHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.bunny);
-            myTorchHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.torch);
-            myTrapHUD.enabled = myHeldObjects.Exists(o => o.TypeOfItem == eItemType.trap);
         }
 
         private bool DidDashTapInput() {
@@ -488,18 +476,11 @@ namespace Completed
             //Unfreeze rotation for comedic effect
             rb2D.freezeRotation = false;
 
-            //TODO: Check for additional lives
-            //Start revival timer, do some spooky sound effects, then explode with revival power!!
-
-            //TODO: Make a HUD Script instead of finding the text objects
-            if (GameObject.Find("DeadText") != null && GameObject.Find("DeadText").GetComponent<Text>() != null) {
-                Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
-                deadtext.text = "DEAD.";
-                deadtext.rectTransform.localScale = new Vector3(4, 1, 1);
+                myHUD.SetBigText("DEAD.");
                 if (myAdditionalLives > 0) {
-                    deadtext.text = "dead?";
+                    myHUD.SetBigText("dead?");
                 }
-            }
+            
         }
 
         private void OnTriggerExit2D(Collider2D other)

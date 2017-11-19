@@ -14,6 +14,8 @@ public class BoardManager : MonoBehaviour {
     private Transform player;       // Reference to the player's transform.
     private Map myMap;
 
+    private HUDScript myHUD;
+
     /// <summary>
     /// Creates a new scene using a random map
     /// </summary>
@@ -54,11 +56,10 @@ public class BoardManager : MonoBehaviour {
 		//Place the player
         player = GameObject.FindGameObjectWithTag("Player").transform;
         player.position = new Vector3(myMap.StartPoint.x, myMap.StartPoint.y);
-
         PlayerBehaviour playerScript = player.GetComponent<PlayerBehaviour>();
-        //if (playerScript.IsDead) {
             playerScript.Reset();
-        //}
+
+        myHUD = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUDScript>();
 
     }
 
@@ -100,8 +101,7 @@ public class BoardManager : MonoBehaviour {
     }
 
     public void ClearDeadSign() {
-        Text deadtext = GameObject.Find("DeadText").GetComponent<Text>();
-        deadtext.rectTransform.localScale = new Vector3(0, 1, 1);
+        myHUD.SetBigText("");
     }
 
 }
