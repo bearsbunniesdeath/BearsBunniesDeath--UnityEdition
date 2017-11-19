@@ -66,7 +66,11 @@ public class HUDScript : MonoBehaviour {
     }
 
     public void SetItemStack(List<eItemType> itemTypeList){
+        int lastItemIndex = -1;
         for (int i = 0; i < ItemImageStack.Length; i++) {
+            //Reset Sizes
+            ItemImageStack[i].rectTransform.localScale = new Vector3(1, 1, 1);
+
             if (itemTypeList.Count > i){
                 ItemImageStack[i].color = Color.white;
                 if (itemTypeList[i] == eItemType.bomb)
@@ -85,12 +89,18 @@ public class HUDScript : MonoBehaviour {
                 {
                     ItemImageStack[i].sprite = TrapSprite;
                 }
+                lastItemIndex = i;
             }
             else
             {
                 ItemImageStack[i].sprite = null;
                 ItemImageStack[i].color = Color.clear;
             }
+        }
+        //Make the last item (top of stack) a little bigger to show player they will drop this
+        if (lastItemIndex >= 0)
+        {
+            ItemImageStack[lastItemIndex].rectTransform.localScale = new Vector3(1.5f, 1.5f, 1);
         }
     }
 
