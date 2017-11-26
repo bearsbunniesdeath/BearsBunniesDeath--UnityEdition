@@ -362,8 +362,27 @@ namespace Completed
                     }
                     asHoldableIterface.IsHeld = true;
                     myHeldObjects.Add(asHoldableIterface);
+                    CheckForMateableBunnies();
                 }
 
+        }
+
+        private void CheckForMateableBunnies() 
+        {
+            for (int i = 0; i < myHeldObjects.Count - 1; i++) { //Don't do the last one since we always look forward
+                IHoldableObject currItem = myHeldObjects[i];
+                IHoldableObject nextItem = myHeldObjects[i + 1];
+                if (currItem.TypeOfItem == eItemType.bunny && nextItem.TypeOfItem == eItemType.bunny){
+                    BunnyBehaviour currBunny = (BunnyBehaviour)currItem;
+                    BunnyBehaviour nextBunny = (BunnyBehaviour)nextItem;
+                    if (currBunny.Gender != BunnyBehaviour.eBunnyGender.baby && nextBunny.Gender != BunnyBehaviour.eBunnyGender.baby)
+                    {
+                        if (currBunny.Gender != nextBunny.Gender) {
+                            Debug.Log("  ;) ");
+                        }
+                    }
+                }
+            }
         }
 
         private bool DidDashTapInput() {
