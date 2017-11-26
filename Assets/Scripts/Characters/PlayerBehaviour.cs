@@ -28,7 +28,7 @@ namespace Completed
 
         //Revival Stuff
         const float REVIVAL_DELAY = 3.00f;
-        private float myRevivalDelayTime = 0f;
+        private Timer myReviveDelayTimer;
 
         private ThickGrassScript myCurrentThickGrass;
 
@@ -116,6 +116,8 @@ namespace Completed
             myDashTimer = -DASH_STUN_TIME - 1;
 
             myStamina = MAX_PLAYER_STAMINA;
+            myReviveDelayTimer = gameObject.AddComponent<Timer>(); ;
+            myReviveDelayTimer.ResetTime = REVIVAL_DELAY;
 
             myHUD = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUDScript>();
         }
@@ -142,20 +144,11 @@ namespace Completed
             {
                 AliveUpdate(); }
             else {
-                if (myRevivalDelayTime > 0f)
-                {
-                    myRevivalDelayTime -= Time.deltaTime;
-                    //Time JUST expired, commence revival!
-                    if (myRevivalDelayTime < 0 && myRevivalDelayTime + Time.deltaTime > 0) {
-                        Revive();
-                        myHUD.SetBigText("");
-                    }
+                if (myReviveDelayTimer.CheckForDone()) {
+                    Revive();
                 }
-                else {
-                    if (myAdditionalLives > 0)
-                    {
-                        myRevivalDelayTime = REVIVAL_DELAY;
-                    }
+                else if (!myReviveDelayTimer.IsRunning && myAdditionalLives > 0) {
+                    myReviveDelayTimer.StartTimer();
                 }
             }
 
@@ -217,6 +210,7 @@ namespace Completed
                 rb2D.freezeRotation = true;
             }
             myAdditionalLives -= 1;
+            myHUD.SetBigText("");
         }
 
         private void AliveUpdate() {
