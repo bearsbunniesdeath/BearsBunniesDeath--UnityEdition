@@ -21,8 +21,9 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
         baby
     }
     public eBunnyGender? Gender = null;
-    private BunnyBehaviour myMate;
-    private float myMatingTimer = 0f;
+
+    public BunnyBehaviour Mate;
+    private Timer myMatingTimer;
     private float MAX_MATING_TIME = 5f; //5 for now, for faster debug
 
     private bool myHasEdibleCarcass = true;
@@ -47,6 +48,13 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
                 this.GetComponent<Collider2D>().enabled = false;
             }
             else {
+                if (Mate != null) {
+                    //Bunny Break up.
+                    Mate.Mate = null; //Free myself from the other
+                    Mate = null;
+                    //TODO: Sad noise. No one loves me anymore... :(
+                }
+
                 if (IsAlive) {
                     Start();
                     myDontPickUpTime = MAX_DONT_PICK_UP_TIME;
@@ -108,16 +116,10 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
     // Use this for initialization
     void Start()
     {
+        myMatingTimer = gameObject.AddComponent<Timer>();
+        myMatingTimer.ResetTime = MAX_MATING_TIME;
         if (Gender == null) {
             Gender = (eBunnyGender)(UnityEngine.Random.Range(0, 2));
-            //For now we will colour them for easier dev
-        //    SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        //    if (Gender == eBunnyGender.male) {
-        //        renderer.color = Color.red;
-        //    }
-        //    else if (Gender == eBunnyGender.female){
-        //        renderer.color = Color.blue;
-        //    }
         }
         
         myAudioSource = GetComponent<AudioSource>();
@@ -144,6 +146,18 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
 
         if (myDontPickUpTime > 0f) {
             myDontPickUpTime -= Time.deltaTime;
+        }
+
+        if (myMatingTimer.CheckForDone() && Mate != null) {
+            if (Gender == eBunnyGender.female) {
+                //So we don't have two babies
+
+                GameObject prefabBunny = MapBuilder.instance.bunny;
+                var newBunny = Instantiate(prefabBunny, transform.position, transform.rotation);
+                newBunny.GetComponent<BunnyBehaviour>().Gender = eBunnyGender.baby;
+
+                Debug.Log("BABY!");
+            }
         }
 
     }
@@ -215,5 +229,10 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
     public void MakePickUpNoise()
     {
         SoundEffectHelper.MakeNoise(myAudioSource, PickUpSound);
+    }
+
+    public void StartMating(BunnyBehaviour otherBunny) {
+        Mate = otherBunny;
+        myMatingTimer.StartTimer();
     }
 }

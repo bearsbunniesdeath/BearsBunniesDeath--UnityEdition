@@ -116,7 +116,7 @@ namespace Completed
             myDashTimer = -DASH_STUN_TIME - 1;
 
             myStamina = MAX_PLAYER_STAMINA;
-            myReviveDelayTimer = gameObject.AddComponent<Timer>(); ;
+            myReviveDelayTimer = gameObject.AddComponent<Timer>();
             myReviveDelayTimer.ResetTime = REVIVAL_DELAY;
 
             myHUD = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUDScript>();
@@ -176,9 +176,9 @@ namespace Completed
 
         private void UpdateItemHUD()
         {
-            List<eItemType> itemTypeList = new List<eItemType>();
+            List<eHUDItemType> itemTypeList = new List<eHUDItemType>();
             foreach (IHoldableObject currItem in myHeldObjects) {
-                itemTypeList.Add(currItem.TypeOfItem);
+                itemTypeList.Add(HUDScript.GetHUDTypeFromIHoldable(currItem));
             }
 
             myHUD.SetItemStack(itemTypeList);
@@ -193,6 +193,18 @@ namespace Completed
                 myHeldObjects.Remove(dropMe);
             }
         }
+
+        //private void ForceInsertItem(IHoldableObject item, int index) {
+        //    item.MakePickUpNoise();
+        //    item.IsHeld = true;
+        //    myHeldObjects.Insert(index, item);
+        //    CheckForMateableBunnies();
+
+        //    if (myHeldObjects.Count > MAX_ITEMS) {
+        //        ReleaseTopItemInStack();
+        //    }
+
+        //}
 
         private void Revive()
         {
@@ -371,8 +383,11 @@ namespace Completed
                     BunnyBehaviour nextBunny = (BunnyBehaviour)nextItem;
                     if (currBunny.Gender != BunnyBehaviour.eBunnyGender.baby && nextBunny.Gender != BunnyBehaviour.eBunnyGender.baby)
                     {
-                        if (currBunny.Gender != nextBunny.Gender) {
+                        if (currBunny.Gender != nextBunny.Gender && currBunny.Mate == null && nextBunny.Mate == null) {
                             Debug.Log("  ;) ");
+                            //Must go both ways, so both can check if the other's still there.
+                            currBunny.StartMating(nextBunny);
+                            nextBunny.StartMating(currBunny);
                         }
                     }
                 }

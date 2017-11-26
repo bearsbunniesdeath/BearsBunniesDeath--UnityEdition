@@ -37,4 +37,17 @@ namespace Assets.Scripts
         trap,
         bomb
     }
+
+    /// <summary>
+    /// The HUD needs to know some more details of the items, (ex. Bunny gender)
+    /// </summary>
+    public enum eHUDItemType
+    {
+        bunny,
+        bunnyFemale,
+        bunnyMale,
+        torch,
+        trap,
+        bomb
+    }
 }
