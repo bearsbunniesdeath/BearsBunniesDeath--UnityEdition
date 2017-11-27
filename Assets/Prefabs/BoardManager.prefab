@@ -106,8 +106,8 @@ MonoBehaviour:
     minimum: 100
     maximum: 100
   numberOfBears:
-    minimum: 15
-    maximum: 15
+    minimum: 10
+    maximum: 10
   numberOfBunnies:
     minimum: 10
     maximum: 10

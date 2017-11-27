@@ -18,7 +18,7 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
     {
         male,
         female,
-        baby
+        baby //Change to Unmateable, maybe have a limit of babies per bunny?
     }
     public eBunnyGender? Gender = null;
 

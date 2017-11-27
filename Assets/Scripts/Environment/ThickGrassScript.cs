@@ -13,6 +13,7 @@ namespace Assets.Scripts.Environment
         float SLOWING_FACTOR = 0.5f;
         public float SlowingFactor;
         float DIMMING_FACTOR = 0.5f;
+        public float DimmingTime = 0.5f; // Time in seconds for the light to go all the way down
         public float DimmingFactor;
 
         void Start()

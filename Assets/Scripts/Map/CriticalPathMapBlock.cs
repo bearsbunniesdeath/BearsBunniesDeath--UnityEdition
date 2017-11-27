@@ -70,7 +70,7 @@ namespace Assets.Scripts.Map
                 //No torch at this point, this is a generic layout, just put in middle
 
                 //Since the blocks are smaller now, only do a < 1 torch:block ratio
-                if (UnityEngine.Random.Range(0, 2) == 1)
+                if (UnityEngine.Random.Range(0, 5) == 1)
                 {
                     this.blockObjects.Add(new MapObject(MapBuilder.instance.TorchObject, MapPositionFromCellPosition(new Vector2(3, 3))));
                 }

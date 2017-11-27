@@ -31,6 +31,7 @@ namespace Completed
         private Timer myReviveDelayTimer;
 
         private ThickGrassScript myCurrentThickGrass;
+        private float myTimeInThickGrass;
 
         private int MAX_PLAYER_STAMINA = 100;
         //private int MED_PLAYER_STAMINA = 100;
@@ -330,15 +331,19 @@ namespace Completed
         {
             if (myCurrentThickGrass != null)
             {
-
-                myLight.range = myDefaultLightRange* myCurrentThickGrass.DimmingFactor;
+                myTimeInThickGrass = Math.Min(myTimeInThickGrass + Time.deltaTime, myCurrentThickGrass.DimmingTime);
+                myLight.range = myDefaultLightRange*(1 - (1 - myCurrentThickGrass.DimmingFactor) * myTimeInThickGrass / myCurrentThickGrass.DimmingTime);
 
                 myCurrentThickGrass.TakeDamage(inSpeed * Time.deltaTime);
                 if (myCurrentThickGrass != null)
                 {
                     return inSpeed * myCurrentThickGrass.SlowingFactor; //It might be destroyed after taking damage
                 }
-                    
+
+            }
+            else {
+                myTimeInThickGrass = Math.Max(0, myTimeInThickGrass - 1.5f* Time.deltaTime);
+                //When walkin through multiple patches of grass, the darkness shouldn't let up instantly
             }
             return inSpeed;
         }
