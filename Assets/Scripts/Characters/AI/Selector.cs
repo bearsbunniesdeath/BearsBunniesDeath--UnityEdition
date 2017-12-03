@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Sequence nodes are used to find and execute the first child that has not yet succeeded.
+/// A selector (fallback) node is used to find and execute the first child that does not fail. 
 /// </summary>
 public class Selector : Node
 {
 
-#region "Lifetime"
+    #region "Lifetime"
 
-    /// <param name="children">Child nodes that are ticked in order</param>
+    /// <param name="children">Child nodes in order of most importance</param>
     public Selector(IEnumerable<Node> children) : base(children)
     {        
     }

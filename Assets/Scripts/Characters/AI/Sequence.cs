@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// A selector (fallback) node is used to find and execute the first child that does not fail. 
+/// Sequence nodes are used to find and execute the first child that has not yet succeeded.
 /// </summary>
 public class Sequence : Node {
 
 #region "Lifetime"
 
-    /// <param name="children">Child node in order of most importance</param>
+    /// <param name="children">Child nodes that are ticked in order</param>
     public Sequence(IEnumerable<Node> children) : base(children)
     {
     }
