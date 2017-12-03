@@ -17,6 +17,7 @@ TagManager:
   - ThickGrass
   - WearableItem
   - HUD
+  - BerryBush
   layers:
   - Default
   - TransparentFX
