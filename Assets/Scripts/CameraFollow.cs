@@ -54,8 +54,6 @@ public class CameraFollow : MonoBehaviour
     void TrackPlayer()
     {
 
-        bool dimLights = false;
-
         // By default the target x and y coordinates of the camera are it's current x and y coordinates.
         float targetX = transform.position.x;
         float targetY = transform.position.y;
@@ -83,7 +81,7 @@ public class CameraFollow : MonoBehaviour
         //targetX = Mathf.Clamp(targetX, minXAndY.x, maxXAndY.x);
         //targetY = Mathf.Clamp(targetY, minXAndY.y, maxXAndY.y);
 
-        if (!playerScript.IsInThickGrass())
+        if (!playerScript.IsInDarkArea())
         {
             //Get a darkness factor based on player distace from camera from 0 - 2 units
             float maxDistance = 2f;
@@ -91,15 +89,14 @@ public class CameraFollow : MonoBehaviour
             float maxBrightness = 0.1f;
             Color skyColor = new Color(darknessFactor * maxBrightness, darknessFactor * maxBrightness, darknessFactor * maxBrightness, 1F);
             RenderSettings.ambientSkyColor = skyColor;
-
-            // Set the camera's position to the target position with the same z component.
-            transform.position = new Vector3(targetX, targetY, transform.position.z);
         }
         else
         {
             RenderSettings.ambientSkyColor = Color.black;
         }
 
+        // Set the camera's position to the target position with the same z component.
+        transform.position = new Vector3(targetX, targetY, transform.position.z);
     }
 
     private float GetDistanceIgnoringZCoord(Vector3 pos1, Vector3 pos2) {

@@ -30,7 +30,7 @@ namespace Completed
         const float REVIVAL_DELAY = 3.00f;
         private Timer myReviveDelayTimer;
 
-        private ThickGrassScript myCurrentThickGrass;
+        private IPlayerLightDimmer myCurrentDimmingElement;
         private float myTimeInThickGrass;
 
         private int MAX_PLAYER_STAMINA = 100;
@@ -242,6 +242,7 @@ namespace Completed
                             //Just a little spurt of what's left in stamina
                             myStamina = -0.1f;
                             myDashTimer = DASH_TIME * myStamina / DASH_ENERGY;
+                            AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
                         }
                         else
                         {
@@ -249,6 +250,7 @@ namespace Completed
                             //Full power Dash
                             myStamina = myStamina - DASH_ENERGY;
                             myDashTimer = DASH_TIME;
+                            AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
                         }
                     }
                     //For now we are not having a sprint, mechanism only dives
@@ -275,6 +277,7 @@ namespace Completed
                 else if (myDashTimer > 0f)
                 {
                     //In dash
+                    AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
                     myRenderer.material.SetColor("_Color", Color.red);
                     myDashTimer -= Time.deltaTime;
                     Vector3 movement = new Vector3(myDashDirection.x, myDashDirection.y, 0);
@@ -289,6 +292,7 @@ namespace Completed
                 else
                 {
                     //in stun
+                    AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
                     myRenderer.material.SetColor("_Color", Color.yellow);
                     myDashTimer -= Time.deltaTime;
                     Speed = DASH_STUN_SPEED;
@@ -322,23 +326,31 @@ namespace Completed
             }
         }
 
-        public bool IsInThickGrass()
+        public bool IsInDarkArea()
         {
-            return myCurrentThickGrass != null;
+            return myCurrentDimmingElement != null;
         }
 
         private float AdjustSpeedAndLightForThickGrass(float inSpeed)
         {
-            if (myCurrentThickGrass != null)
+            if (myCurrentDimmingElement != null)
             {
-                myTimeInThickGrass = Math.Min(myTimeInThickGrass + Time.deltaTime, myCurrentThickGrass.DimmingTime);
-                myLight.range = myDefaultLightRange*(1 - (1 - myCurrentThickGrass.DimmingFactor) * myTimeInThickGrass / myCurrentThickGrass.DimmingTime);
+                myTimeInThickGrass = Math.Min(myTimeInThickGrass + Time.deltaTime, myCurrentDimmingElement.DimmingTime);
+                myLight.range = myDefaultLightRange*(1 - (1 - myCurrentDimmingElement.DimmingFactor) * myTimeInThickGrass / myCurrentDimmingElement.DimmingTime);
 
-                myCurrentThickGrass.TakeDamage(inSpeed * Time.deltaTime);
-                if (myCurrentThickGrass != null)
-                {
-                    return inSpeed * myCurrentThickGrass.SlowingFactor; //It might be destroyed after taking damage
+                if (myCurrentDimmingElement.GetType() == typeof(ThickGrassScript)) {
+
+                    ThickGrassScript asGrass = (ThickGrassScript)myCurrentDimmingElement;
+
+                    //Only grass does this stuff
+                    asGrass.TakeDamage(inSpeed * Time.deltaTime);
+                    if (asGrass != null)
+                    {
+                        return inSpeed * asGrass.SlowingFactor; //It might be destroyed after taking damage
+                    }
                 }
+
+
 
             }
             else {
@@ -456,23 +468,23 @@ namespace Completed
 
 
         //OnTriggerEnter2D is sent when another object enters a trigger collider attached to this object (2D physics only).
-        private void OnTriggerEnter2D (Collider2D other)
-		{
+        private void OnTriggerEnter2D(Collider2D other)
+        {
             //Check if the tag of the trigger collided with is Exit.
             if (other.tag == "Bear")
             {
                 if (!myIsInvincible) {
                     Kill();
-                }                
-                
+                }
+
                 myRenderer.material.SetColor("_Color", Color.black);
             }
             else if (other.tag == "Torch" || other.tag == "Bunny" || other.tag == "Trap" || other.tag == "Bomb") {
                 AttemptToPickUpItem(other.gameObject);
             }
-            else if (other.tag == "ThickGrass")
+            else if (other.tag == "ThickGrass" || other.tag == "HouseInterior")
             {
-                myCurrentThickGrass  = other.GetComponent<ThickGrassScript>();
+                myCurrentDimmingElement  = other.GetComponent<IPlayerLightDimmer>();
             }
             else if (other.tag == "WearableItem")
             {
@@ -518,9 +530,9 @@ namespace Completed
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.tag == "ThickGrass")
+            if (other.tag == "ThickGrass" || other.tag == "HouseInterior")
             {
-                myCurrentThickGrass = null;
+                myCurrentDimmingElement = null;
             }
         }
         

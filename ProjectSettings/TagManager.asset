@@ -17,6 +17,8 @@ TagManager:
   - ThickGrass
   - WearableItem
   - HUD
+  - BerryBush
+  - HouseInterior
   layers:
   - Default
   - TransparentFX

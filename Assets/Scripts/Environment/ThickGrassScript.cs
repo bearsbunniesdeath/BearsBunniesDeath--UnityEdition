@@ -6,18 +6,30 @@ using UnityEngine;
 
 namespace Assets.Scripts.Environment
 {
-    class ThickGrassScript : MonoBehaviour 
+    class ThickGrassScript : MonoBehaviour, IPlayerLightDimmer
     {
         float myHealth;
         float MAX_HEALTH = 1.5f;
         float SLOWING_FACTOR = 0.5f;
         public float SlowingFactor;
         float DIMMING_FACTOR = 0.5f;
-        public float DimmingTime = 0.5f; // Time in seconds for the light to go all the way down
-        public float DimmingFactor;
+
+        public float DimmingTime
+        {
+            private set;
+            get;
+        }
+
+        public float DimmingFactor
+        {
+            private set;
+            get;
+        }
+
 
         void Start()
         {
+            DimmingTime = 0.5f;
             myHealth = MAX_HEALTH;
             SlowingFactor = SLOWING_FACTOR;
             DimmingFactor = DIMMING_FACTOR;
