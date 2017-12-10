@@ -9,6 +9,8 @@ using Assets.Scripts;
 
 public class BearBehaviour : NPCBehaviour {
 
+    private BehaviorTree bTree;
+
     private enum BehaviourType
     {
         eIdle,
@@ -61,10 +63,119 @@ public class BearBehaviour : NPCBehaviour {
     private float myStuckTimeRemaining = 0f;
 
     [SerializeField]
-    private BehaviourType behaviour;    
+    private BehaviourType behaviour;
+
+    #region "Conditions"
+
+    private bool OnBunnyInRangeCheck()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool OnPlayerInRangeCheck()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool OnBerriesInRangeCheck()
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool OnTiredCheck()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region "Actions"
+
+    private NodeStatus OnTrackBunnyAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnEatBunnyAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnTrackPlayerAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnEatPlayerAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnTrackBerriesAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnEatBerriesAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnRoamingAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    private NodeStatus OnIdleAction()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
 
     // Use this for initialization
     void Start () {
+
+        bTree  = new BehaviorTree(
+            new Selector(
+                new List<Node>
+                {
+                    new Sequence(
+                        new List<Node>
+                        {
+                            new Condition(OnBunnyInRangeCheck),
+                            new Action(OnTrackBunnyAction),
+                            new Action(OnEatBunnyAction)
+                        }
+                    ),
+                    new Sequence(
+                        new List<Node>
+                        {
+                            new Condition(OnPlayerInRangeCheck),
+                            new Action(OnTrackPlayerAction),
+                            new Action(OnEatPlayerAction)
+                        }
+                    ),
+                    new Sequence(
+                        new List<Node>
+                        {
+                            new Condition(OnBerriesInRangeCheck),
+                            new Action(OnTrackBerriesAction),
+                            new Action(OnEatBerriesAction)
+                        }
+                    ),
+                    new Sequence(
+                        new List<Node>
+                        {
+                            new Condition(OnTiredCheck),
+                            new Action(OnRoamingAction),
+                        }
+                    ),
+                    new Action(OnIdleAction)
+                }
+            )
+        );
+
         //TODO: This only needs to happen once in the beginning
         MapInventory.UpdateGlobalBunnyList();
 
