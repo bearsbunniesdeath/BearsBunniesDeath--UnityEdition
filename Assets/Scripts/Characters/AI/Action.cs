@@ -10,7 +10,7 @@ public class Action : LeafNode
 {
     private Func<NodeStatus> doThis;
 
-    public Action(Func<NodeStatus> doThis)
+    public Action(Func<NodeStatus> doThis, System.Action initialize = null, System.Action terminate = null) : base(initialize, terminate)
     {
         this.doThis = doThis;
     }

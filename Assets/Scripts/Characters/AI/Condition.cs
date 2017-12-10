@@ -10,7 +10,7 @@ public class Condition : LeafNode
 {
     private Func<bool> checkThis;
 
-    public Condition(Func<bool> checkThis)
+    public Condition(Func<bool> checkThis, System.Action initialize = null, System.Action terminate = null): base(initialize, terminate)
     {
         this.checkThis = checkThis;
     }
