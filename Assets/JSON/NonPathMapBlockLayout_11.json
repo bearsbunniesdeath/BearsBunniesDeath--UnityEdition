@@ -1,0 +1,20 @@
+{
+    "blockPosition": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "DensityAreas": [
+        {
+            "DensityCoords": [
+                {
+                    "x": 0.0,
+                    "y": 0.0
+                }
+            ],
+            "Density": 1.0,
+            "GameObjType": 9
+        }
+    ],
+    "blockObjects": {},
+    "SIZE_OF_BLOCK": 8
+}

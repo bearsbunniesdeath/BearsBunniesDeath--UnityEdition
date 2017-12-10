@@ -141,11 +141,9 @@ public class Map
     {
 
         MapBlockFactory BlockFactory = new MapBlockFactory();
-        //BlockFactory.RegenerateJSONFiles();
+        BlockFactory.RegenerateJSONFiles();
 
-        //TODO: Shortcuts in the method
         criticalPathOfBlocksIndexes = GetRandomPreMadePath();
-
 
         if (Random.Range(0, 2) == 1)
         {

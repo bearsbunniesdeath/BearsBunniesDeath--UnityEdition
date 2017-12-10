@@ -160,6 +160,13 @@ namespace Assets.Scripts.Map
                 DensityAreas.Add(new DensityArea(1f, leftChunk, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, rightChunk, DensityArea.eMapItems.terrainObstacles));
              }
+            else if (index == 11)
+            {
+                //House (has revival item inside)
+                List<MapPosition> housePlacement = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 0));
+
+                DensityAreas.Add(new DensityArea(1f, housePlacement, DensityArea.eMapItems.house));
+            }
 
 
             string json = JsonUtility.ToJson(this,true);
