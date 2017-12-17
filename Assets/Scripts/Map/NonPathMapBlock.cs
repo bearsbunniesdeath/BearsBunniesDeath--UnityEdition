@@ -34,21 +34,24 @@ namespace Assets.Scripts.Map
 
             List<MapPosition> allCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(this.SIZE_OF_BLOCK - 1, this.SIZE_OF_BLOCK - 1));
 
+            //Dense area of obstacles and grass
             if (index == 0) {
                 DensityAreas.Add(new DensityArea(DENSE_PROBABILITY, allCoords, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(THICK_GRASS_PROBABILITY, allCoords, DensityArea.eMapItems.thickGrass));
             }
+            //Island of obstacles with some brush around it
             else if (index == 1) {
                 List<MapPosition> islandCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 3), new MapPosition(6, 6));
                 DensityAreas.Add(new DensityArea(1f, islandCoords, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(0.1f, allCoords, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, islandCoords, DensityArea.eMapItems.thickGrass));
             }
             else if (index == 2)
             {
                 //Bomb island in full forrest
                 List<MapPosition> islandCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(4, 4), new MapPosition(6, 6));
-                DensityAreas.Add(new DensityArea(0.5f, islandCoords, DensityArea.eMapItems.armedBomb));
-                DensityAreas.Add(new DensityArea(0.5f, islandCoords, DensityArea.eMapItems.bomb));
+                DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.armedBomb));
+                DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.bomb));
                 DensityAreas.Add(new DensityArea(DENSE_PROBABILITY, allCoords, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(THICK_GRASS_PROBABILITY, allCoords, DensityArea.eMapItems.thickGrass));
             }
@@ -62,10 +65,11 @@ namespace Assets.Scripts.Map
             {
                 //Item Detour
                 List<MapPosition> islandCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(4, 4), new MapPosition(6, 6));
-                DensityAreas.Add(new DensityArea(0.11f, islandCoords, DensityArea.eMapItems.bearTrap));
-                DensityAreas.Add(new DensityArea(0.11f, islandCoords, DensityArea.eMapItems.bomb));
+                DensityAreas.Add(new DensityArea(0.05f, islandCoords, DensityArea.eMapItems.bearTrap));
+                DensityAreas.Add(new DensityArea(0.05f, islandCoords, DensityArea.eMapItems.bomb));
                 DensityAreas.Add(new DensityArea(0.11f, islandCoords, DensityArea.eMapItems.armedBomb));
                 DensityAreas.Add(new DensityArea(0.65f, allCoords, DensityArea.eMapItems.thickGrass));
+                DensityAreas.Add(new DensityArea(0.25f, allCoords, DensityArea.eMapItems.terrainObstacles));
             }
             else if (index == 5)
             {
@@ -100,12 +104,12 @@ namespace Assets.Scripts.Map
                 DensityAreas.Add(new DensityArea(1f, topRightCorner, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, innerLeftWall, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, innerRightWall, DensityArea.eMapItems.terrainObstacles));
-                DensityAreas.Add(new DensityArea(0.2f, itemSpace, DensityArea.eMapItems.bearTrap));
-                DensityAreas.Add(new DensityArea(0.2f, itemSpace, DensityArea.eMapItems.bomb));
+                DensityAreas.Add(new DensityArea(0.1f, itemSpace, DensityArea.eMapItems.bearTrap));
+                DensityAreas.Add(new DensityArea(0.1f, itemSpace, DensityArea.eMapItems.bomb));
             }
             else if (index == 7)
             {
-                //Four squares
+                //Four squares with some brush around it
                 List<MapPosition> topLeft = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 5), new MapPosition(2,6));
                 List<MapPosition> topRight = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(5, 5), new MapPosition(6, 6));
                 List<MapPosition> botLeft = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 1), new MapPosition(2, 2));
@@ -115,6 +119,7 @@ namespace Assets.Scripts.Map
                 DensityAreas.Add(new DensityArea(1f, topRight, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, botLeft, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, botRight, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(0.1f, allCoords, DensityArea.eMapItems.terrainObstacles));
             }
             else if (index == 8)
             {
@@ -132,7 +137,7 @@ namespace Assets.Scripts.Map
             }
             else if (index == 9)
             {
-                //Revival Throne (encased)
+                //Empty Throne (encased) - Used to have revive, but now the houses have revives. So we don't want too many.
                 List<MapPosition> leftPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
                 List<MapPosition> rightPillar = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
                 List<MapPosition> topChunk = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 0), new MapPosition(4, 0));
@@ -145,7 +150,7 @@ namespace Assets.Scripts.Map
 
                 DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(1, 0), new MapPosition(1, 2), new MapPosition(1, 5), new MapPosition(1, 7) }, DensityArea.eMapItems.terrainObstacles));
                 DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(6, 0), new MapPosition(6, 2), new MapPosition(6, 5), new MapPosition(6, 7) }, DensityArea.eMapItems.terrainObstacles));
-                DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(4, 4) }, DensityArea.eMapItems.reviveItem));
+                //DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(4, 4) }, DensityArea.eMapItems.reviveItem));
             }
             else if (index == 10)
             {
@@ -166,6 +171,12 @@ namespace Assets.Scripts.Map
                 List<MapPosition> housePlacement = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 0));
 
                 DensityAreas.Add(new DensityArea(1f, housePlacement, DensityArea.eMapItems.house));
+            }
+            //Another Dense area since the map is too open now.
+            else if (index == 12)
+            {
+                DensityAreas.Add(new DensityArea(0.40f, allCoords, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(0.25f, allCoords, DensityArea.eMapItems.thickGrass));
             }
 
 

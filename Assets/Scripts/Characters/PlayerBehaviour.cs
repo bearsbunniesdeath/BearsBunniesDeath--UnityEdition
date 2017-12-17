@@ -25,6 +25,7 @@ namespace Completed
         //Upgradeable stats
         private float myAdditionalSpeed = 0;
         private int myAdditionalLives = 0;
+        //private int myAdditionalLives = 0; TODO: Backpack pickup, increase number of items you can carry
 
         //Revival Stuff
         const float REVIVAL_DELAY = 3.00f;
@@ -45,7 +46,7 @@ namespace Completed
         private Collider2D myCollider;
         private Animator myAnimator;
 
-        private const int MAX_ITEMS = 4;
+        private const int MAX_ITEMS = 3;
         List<IHoldableObject> myHeldObjects = new List<IHoldableObject>();
 
         private Vector2 myDashDirection;
@@ -242,7 +243,7 @@ namespace Completed
                             //Just a little spurt of what's left in stamina
                             myStamina = -0.1f;
                             myDashTimer = DASH_TIME * myStamina / DASH_ENERGY;
-                            AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
+                            AdjustSpeedAndLightForThickGrass(DASH_SPEED); // TODO: Better way to adjust lights for dimmers without calling this
                         }
                         else
                         {
@@ -250,7 +251,7 @@ namespace Completed
                             //Full power Dash
                             myStamina = myStamina - DASH_ENERGY;
                             myDashTimer = DASH_TIME;
-                            AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
+                            AdjustSpeedAndLightForThickGrass(DASH_SPEED); // TODO: Better way to adjust lights for dimmers without calling this
                         }
                     }
                     //For now we are not having a sprint, mechanism only dives
@@ -277,7 +278,7 @@ namespace Completed
                 else if (myDashTimer > 0f)
                 {
                     //In dash
-                    AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
+                    AdjustSpeedAndLightForThickGrass(DASH_SPEED); // TODO: Better way to adjust lights for dimmers without calling this
                     myRenderer.material.SetColor("_Color", Color.red);
                     myDashTimer -= Time.deltaTime;
                     Vector3 movement = new Vector3(myDashDirection.x, myDashDirection.y, 0);
@@ -292,7 +293,7 @@ namespace Completed
                 else
                 {
                     //in stun
-                    AdjustSpeedAndLightForThickGrass(-12321); // TODO: Better way to adjust lights for dimmers without calling this
+                    AdjustSpeedAndLightForThickGrass(DASH_STUN_SPEED); // TODO: Better way to adjust lights for dimmers without calling this
                     myRenderer.material.SetColor("_Color", Color.yellow);
                     myDashTimer -= Time.deltaTime;
                     Speed = DASH_STUN_SPEED;

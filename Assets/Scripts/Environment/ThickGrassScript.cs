@@ -37,7 +37,7 @@ namespace Assets.Scripts.Environment
 
         public void TakeDamage(float dmg) {
             myHealth -= dmg;
-            if (myHealth < 0) {
+            if (myHealth < 0f) {
                 Destroy(gameObject);
             }
         }

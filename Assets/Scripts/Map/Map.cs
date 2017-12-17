@@ -108,8 +108,6 @@ public class Map
 
         for (int numberOfDoodads = 0; numberOfDoodads < NUMBER_OF_DODDADS; numberOfDoodads++)
         {
-            //TODO: Add some secret items "behind" doodads
-
             //Choose a random doodad from the list
             GameObject newDoodad = MapBuilder.instance.doodads[UnityEngine.Random.Range(0, MapBuilder.instance.doodads.Length)];
             Renderer doodadRenderer = newDoodad.GetComponentInChildren<SpriteRenderer>();

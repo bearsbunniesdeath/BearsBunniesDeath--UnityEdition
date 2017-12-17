@@ -43,7 +43,7 @@
                     "y": 6.0
                 }
             ],
-            "Density": 0.5,
+            "Density": 0.25,
             "GameObjType": 5
         },
         {
@@ -85,7 +85,7 @@
                     "y": 6.0
                 }
             ],
-            "Density": 0.5,
+            "Density": 0.25,
             "GameObjType": 4
         },
         {

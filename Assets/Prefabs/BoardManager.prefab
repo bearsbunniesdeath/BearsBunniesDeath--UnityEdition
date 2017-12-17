@@ -96,7 +96,7 @@ MonoBehaviour:
   runningShoes: {fileID: 1120078910746644, guid: 6fb6edb46fa2cc446a407a5bf70aec6d,
     type: 2}
   reviveItem: {fileID: 1991649705481768, guid: 3416f3c9177a6ae43b127fdbac53fa71, type: 2}
-  house: {fileID: 1416894563296752, guid: fd77aa63cd7407d4cbf52767546bd1bc, type: 2}
+  house: {fileID: 1505817284891356, guid: 56b877e023e4a3841b8fa40c1cf4c01b, type: 2}
   doodads:
   - {fileID: 1000013206920236, guid: add6cbad9fd82e343bda3bdf49216d9e, type: 2}
   - {fileID: 1000012112875622, guid: 8c69fe95064abd547bfd8e8d9144154d, type: 2}
