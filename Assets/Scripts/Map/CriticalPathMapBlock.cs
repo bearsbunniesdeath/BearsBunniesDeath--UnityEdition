@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -223,5 +224,29 @@ namespace Assets.Scripts.Map
             return AllLayouts;
         }
 
+        public void GenerateStraightLayoutToJSON(int index)
+        {
+            DensityAreas = new List<DensityArea>();
+
+            List<MapPosition> allCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(MapBlock.SIZE_OF_BLOCK - 1, MapBlock.SIZE_OF_BLOCK - 1));
+
+            //Dense area of obstacles and grass
+            if (index == 0)
+            {
+                DensityAreas.Add(new DensityArea(DENSE_PROBABILITY, allCoords, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(THICK_GRASS_PROBABILITY, allCoords, DensityArea.eMapItems.thickGrass));
+            }
+
+            string json = JsonUtility.ToJson(this, true);
+            string filePath = "/JSON/PathMapBlockLayout";
+            string fileName = "/StraightPathMapBlockLayout_" + index.ToString() + ".json";
+
+            filePath = Application.dataPath + filePath + fileName;
+
+            using (StreamWriter newTask = new StreamWriter(filePath, !System.IO.File.Exists(filePath)))
+            {
+                newTask.Write(json);
+            }
+        }
     }
 }

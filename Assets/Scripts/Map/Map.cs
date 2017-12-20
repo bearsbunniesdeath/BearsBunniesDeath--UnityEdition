@@ -138,8 +138,8 @@ public class Map
     private void CreateBlocks()
     {
 
-        MapBlockFactory BlockFactory = new MapBlockFactory();
-        BlockFactory.RegenerateJSONFiles();
+        //MapBlockFactory BlockFactory = new MapBlockFactory();
+        MapBlockFactory.RegenerateJSONFiles();
 
         criticalPathOfBlocksIndexes = GetRandomPreMadePath();
 
@@ -197,7 +197,7 @@ public class Map
             }
 
             MapBlock newBlock;
-            newBlock = BlockFactory.MakeMapBlock((int)criticalPathOfBlocksIndexes[i].x, (int)criticalPathOfBlocksIndexes[i].y, leftOpen, topOpen, rightOpen, bottomOpen);
+            newBlock = MapBlockFactory.MakeMapBlock((int)criticalPathOfBlocksIndexes[i].x, (int)criticalPathOfBlocksIndexes[i].y, leftOpen, topOpen, rightOpen, bottomOpen);
             newBlock.Build();
             foreach (MapObject newObj in newBlock.Objects)
             {
@@ -212,7 +212,7 @@ public class Map
             {
                 if (!criticalPathOfBlocksIndexes.Exists(o => o.x == i & o.y == j))
                 {
-                    MapBlock block = BlockFactory.MakeMapBlock(i, j);
+                    MapBlock block = MapBlockFactory.MakeMapBlock(i, j);
                     block.Build();
                     foreach (MapObject newObj in block.Objects)
                     {

@@ -17,7 +17,7 @@ public abstract class MapBlock
     [SerializeField]
     protected MapObjectGrid blockObjects;   //A list of all objects created for the block
     [SerializeField]
-    protected int SIZE_OF_BLOCK = 8;               //THE MAP SHOULD ONLY CARE ABOUT THIS                                          
+    public static int SIZE_OF_BLOCK = 8;               //THE MAP SHOULD ONLY CARE ABOUT THIS                                          
 
     /// <summary>
     /// Builds the block. Generating a list of MapObjects

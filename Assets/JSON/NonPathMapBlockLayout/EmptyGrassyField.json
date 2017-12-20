@@ -529,6 +529,5 @@
             "GameObjType": 8
         }
     ],
-    "blockObjects": {},
-    "SIZE_OF_BLOCK": 8
+    "blockObjects": {}
 }

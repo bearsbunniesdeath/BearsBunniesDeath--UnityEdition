@@ -173,6 +173,5 @@
             "GameObjType": 4
         }
     ],
-    "blockObjects": {},
-    "SIZE_OF_BLOCK": 8
+    "blockObjects": {}
 }
