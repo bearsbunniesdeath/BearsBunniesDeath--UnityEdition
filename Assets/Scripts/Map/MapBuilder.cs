@@ -58,6 +58,7 @@ public class MapBuilder : MonoBehaviour {
     public GameObject armedBombObject;
     public GameObject runningShoes;
     public GameObject reviveItem;
+    public GameObject backPack;
     public GameObject house;
     public GameObject[] doodads;
     public Count countOfTerrainObjects;
@@ -125,6 +126,7 @@ public class MapBuilder : MonoBehaviour {
         objs.Add(armedBombObject);
         objs.Add(runningShoes);
         objs.Add(reviveItem);
+        objs.Add(backPack);
         objs.Add(house);
         foreach (GameObject item in doodads) {
             objs.Add(item);

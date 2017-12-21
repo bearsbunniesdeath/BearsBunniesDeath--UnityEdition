@@ -88,7 +88,7 @@ namespace Assets.Scripts.Map
             JSONLayout2.DensityAreas.Add(new DensityArea(1f, islandCoords, DensityArea.eMapItems.terrainObstacles));
             JSONLayout2.DensityAreas.Add(new DensityArea(0.1f, allCoords, DensityArea.eMapItems.terrainObstacles));
             JSONLayout2.DensityAreas.Add(new DensityArea(1f, islandCoords, DensityArea.eMapItems.thickGrass));
-            JSONLayout2.frequency = JSONLayout.eFrequency.eLow;
+            JSONLayout2.frequency = JSONLayout.eFrequency.eMedium;
             JSONLayout2.LayoutName = "Island";
             NonPathJSONLayouts.Add(JSONLayout2);
             #endregion
@@ -179,7 +179,7 @@ namespace Assets.Scripts.Map
             JSONLayout8.DensityAreas.Add(new DensityArea(1f, botLeft, DensityArea.eMapItems.terrainObstacles));
             JSONLayout8.DensityAreas.Add(new DensityArea(1f, botRight, DensityArea.eMapItems.terrainObstacles));
             JSONLayout8.DensityAreas.Add(new DensityArea(0.1f, allCoords, DensityArea.eMapItems.terrainObstacles));
-            JSONLayout8.frequency = JSONLayout.eFrequency.eLow;
+            JSONLayout8.frequency = JSONLayout.eFrequency.eMedium;
             JSONLayout8.LayoutName = "FourSquares";
             NonPathJSONLayouts.Add(JSONLayout8);
             #endregion
@@ -201,7 +201,7 @@ namespace Assets.Scripts.Map
             NonPathJSONLayouts.Add(JSONLayout9);
             #endregion
 
-            #region //Empty Throne (encased) - Used to have revive, but now the houses have revives. So we don't want too many.
+            #region //BackPack Throne (encased)
             JSONLayout JSONLayout10 = new JSONLayout();
             List<MapPosition> leftPillar1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
             List<MapPosition> rightPillar1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
@@ -214,6 +214,7 @@ namespace Assets.Scripts.Map
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, botChunk1, DensityArea.eMapItems.terrainObstacles));
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(1, 0), new MapPosition(1, 2), new MapPosition(1, 5), new MapPosition(1, 7) }, DensityArea.eMapItems.terrainObstacles));
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(6, 0), new MapPosition(6, 2), new MapPosition(6, 5), new MapPosition(6, 7) }, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout10.DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(5, 5) }, DensityArea.eMapItems.backPack));
             JSONLayout10.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout10.LayoutName = "EmptyThrone";
             NonPathJSONLayouts.Add(JSONLayout10);

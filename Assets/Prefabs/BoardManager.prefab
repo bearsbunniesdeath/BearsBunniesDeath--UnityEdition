@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapBuilder: {fileID: 114000013267404526}
+  boardHolder: {fileID: 0}
 --- !u!114 &114000013267404526
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -96,6 +97,7 @@ MonoBehaviour:
   runningShoes: {fileID: 1120078910746644, guid: 6fb6edb46fa2cc446a407a5bf70aec6d,
     type: 2}
   reviveItem: {fileID: 1991649705481768, guid: 3416f3c9177a6ae43b127fdbac53fa71, type: 2}
+  backPack: {fileID: 1812502556318566, guid: b20f48bebf7775344920cd02e693a504, type: 2}
   house: {fileID: 1505817284891356, guid: 56b877e023e4a3841b8fa40c1cf4c01b, type: 2}
   doodads:
   - {fileID: 1000013206920236, guid: add6cbad9fd82e343bda3bdf49216d9e, type: 2}

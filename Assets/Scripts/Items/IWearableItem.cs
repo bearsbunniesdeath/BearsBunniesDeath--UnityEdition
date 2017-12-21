@@ -7,7 +7,8 @@ using System.Text;
 public enum eWearableItemType
 {
     speed,
-    lives
+    lives,
+    capacity
 }
 
 namespace Assets.Scripts.Items

@@ -151,6 +151,16 @@
             ],
             "Density": 1.0,
             "GameObjType": 2
+        },
+        {
+            "DensityCoords": [
+                {
+                    "x": 5.0,
+                    "y": 5.0
+                }
+            ],
+            "Density": 1.0,
+            "GameObjType": 8
         }
     ],
     "blockObjects": {}

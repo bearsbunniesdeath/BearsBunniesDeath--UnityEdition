@@ -112,6 +112,10 @@ public abstract class MapBlock
         {
             return new GameObject[] { MapBuilder.instance.reviveItem};
         }
+        else if (type == DensityArea.eMapItems.backPack)
+        {
+            return new GameObject[] { MapBuilder.instance.backPack };
+        }
         else if (type == DensityArea.eMapItems.house)
         {
             return new GameObject[] { MapBuilder.instance.house};
@@ -139,6 +143,7 @@ public class DensityArea
         armedBomb,
         shoes,
         reviveItem,
+        backPack,
         thickGrass,
         house
     }

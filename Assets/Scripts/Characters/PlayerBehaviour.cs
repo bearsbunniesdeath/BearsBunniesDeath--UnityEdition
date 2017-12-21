@@ -25,7 +25,7 @@ namespace Completed
         //Upgradeable stats
         private float myAdditionalSpeed = 0;
         private int myAdditionalLives = 0;
-        //private int myAdditionalLives = 0; TODO: Backpack pickup, increase number of items you can carry
+        private int myAdditionalCapacity = 0;
 
         //Revival Stuff
         const float REVIVAL_DELAY = 3.00f;
@@ -87,6 +87,7 @@ namespace Completed
             mySecondWindCount = -1;
             myAdditionalLives = 0;
             myAdditionalSpeed = 0;
+            myAdditionalCapacity = 0;
             transform.rotation = new Quaternion(0, 0, 0,0);
             myHeldObjects.Clear();
             GetComponent<Rigidbody2D>().velocity = Vector3.zero;
@@ -377,7 +378,7 @@ namespace Completed
             //Cast into IHoldable interface
                 IHoldableObject asHoldableIterface = (IHoldableObject)(go.GetComponent(typeof(IHoldableObject)));
 
-            if (myHeldObjects.Contains(asHoldableIterface) || myHeldObjects.Count >= MAX_ITEMS ) { return; }
+            if (myHeldObjects.Contains(asHoldableIterface) || myHeldObjects.Count >= MAX_ITEMS + myAdditionalCapacity) { return; }
 
                 //As of now, the rule is one of each type
                 if ( !(myHeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) && asHoldableIterface.TypeOfItem == eItemType.torch) && asHoldableIterface.IsHoldableInCurrentState) {
@@ -502,6 +503,11 @@ namespace Completed
                 }
                 else if (acquiredItem.TypeOfItem == eWearableItemType.lives) {
                     myAdditionalLives += (int) acquiredItem.Magnitude;
+                }
+                else if (acquiredItem.TypeOfItem == eWearableItemType.capacity)
+                {
+                    Debug.Log("Picked up BackPack");
+                    myAdditionalCapacity += (int)acquiredItem.Magnitude;
                 }
                 //Get rid the of object, so you can't keep picking it up!
                 Destroy(other.gameObject);
