@@ -153,8 +153,11 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
                 //So we don't have two babies
 
                 GameObject prefabBunny = MapBuilder.instance.bunny;
-                var newBunny = Instantiate(prefabBunny, transform.position, transform.rotation);
+                GameObject newBunny = Instantiate(prefabBunny, transform.position, transform.rotation);
                 newBunny.GetComponent<BunnyBehaviour>().Gender = eBunnyGender.baby;
+                if (GameManager.instance != null) {
+                    newBunny.transform.parent = GameManager.instance.boardScript.boardHolder;
+                }
 
                 Debug.Log("BABY!");
             }

@@ -9,8 +9,9 @@ public class BoardManager : MonoBehaviour {
 
     public MapBuilder mapBuilder;
 
+    //Public so anyone can spawn things in the board
+    public Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 
-    private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
     private Transform player;       // Reference to the player's transform.
     private Map myMap;
 
