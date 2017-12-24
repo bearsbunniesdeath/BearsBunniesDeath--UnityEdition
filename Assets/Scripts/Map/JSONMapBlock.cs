@@ -11,13 +11,10 @@ namespace Assets.Scripts.Map
     /// Map blocks that do not have the critical path in them, can be used for special "exploration" blocks or just left dense with forest
     /// </summary>
     [System.Serializable]
-    class NonPathMapBlock : MapBlock
+    class JSONMapBlock : MapBlock
     {
 
-        private float DENSE_PROBABILITY = 0.30f;
-        private float THICK_GRASS_PROBABILITY = 0.50f;
-
-        public NonPathMapBlock(int x, int y)
+        public JSONMapBlock(int x, int y)
         {
             blockPosition = new Vector2(x, y);
             blockObjects = new MapObjectGrid(SIZE_OF_BLOCK, SIZE_OF_BLOCK);

@@ -339,7 +339,7 @@ namespace Completed
             {
                 myTimeInThickGrass = Math.Min(myTimeInThickGrass + Time.deltaTime, myCurrentDimmingElement.DimmingTime);
                 myLight.range = myDefaultLightRange*(1 - (1 - myCurrentDimmingElement.DimmingFactor) * myTimeInThickGrass / myCurrentDimmingElement.DimmingTime);
-
+                Debug.Log("Range of Light: " + myLight.range);
                 if (myCurrentDimmingElement.GetType() == typeof(ThickGrassScript)) {
 
                     ThickGrassScript asGrass = (ThickGrassScript)myCurrentDimmingElement;

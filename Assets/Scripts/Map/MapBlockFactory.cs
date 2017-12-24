@@ -13,10 +13,14 @@ namespace Assets.Scripts.Map
 
         static private List<JSONLayout> NonPathJSONLayouts;
         static private List<String> JSONNameNonPathProbabilityMap;
+        static private List<JSONLayout> StraightPathJSONLayouts;
+        static private List<String> JSONNameStraightPathProbabilityMap;
 
         static MapBlockFactory(){
             NonPathJSONLayouts = new List<JSONLayout>();
-            BuildAllJSONLayouts();
+            StraightPathJSONLayouts = new List<JSONLayout>();
+            BuildAllNonPathJSONLayouts();
+            BuildAllStraightPathJSONLayouts();
             SetJSONProbabityMaps();
             //CREATE many density area and assign them to JSONLayouts with Probabilities
 
@@ -30,6 +34,14 @@ namespace Assets.Scripts.Map
                     JSONNameNonPathProbabilityMap.Add(jl.LayoutName);
                 }
             }
+            JSONNameStraightPathProbabilityMap = new List<string>();
+            foreach (JSONLayout jl in StraightPathJSONLayouts)
+            {
+                for (int i = 0; i < (int)(jl.frequency); i++)
+                {
+                    JSONNameStraightPathProbabilityMap.Add(jl.LayoutName);
+                }
+            }
         }
 
         //TODO: Add difficulty levels that we give to premade blocks
@@ -37,12 +49,38 @@ namespace Assets.Scripts.Map
         {
 
             MapBlock newBlock;
-            if (leftOpen || topOpen || rightOpen || bottomOpen)
+            int numberOfOpenings = MapHelper.BoolToInt(leftOpen) + MapHelper.BoolToInt(topOpen) + MapHelper.BoolToInt(rightOpen) + MapHelper.BoolToInt(bottomOpen);
+
+            //Temp: Starter and End block is fine with what's happening with CriticalPathMapBlock logic.
+            if (numberOfOpenings == 1)
             {
-                //This is a part of critical path
                 newBlock = new CriticalPathMapBlock(x, y, leftOpen, topOpen, rightOpen, bottomOpen);
             }
-            else {
+            else if (numberOfOpenings == 2 && topOpen == bottomOpen) //Straight Path
+            {
+                //This is a part of critical path (Straight)
+                string dirPath = Application.dataPath + "/JSON/NonPathMapBlockLayout/";
+                String path = dirPath + JSONNameStraightPathProbabilityMap[UnityEngine.Random.Range(0, JSONNameStraightPathProbabilityMap.Count)] + ".JSON";
+
+                //Read the text from directly from the test.txt file
+                StreamReader reader = new StreamReader(path);
+                String jsonText = reader.ReadToEnd();
+                JSONMapBlock nonPathBlock = JsonUtility.FromJson<JSONMapBlock>(jsonText);
+                nonPathBlock.AfterSerialize(x, y);
+                newBlock = nonPathBlock;
+
+                if (!topOpen)
+                {//At this point it must be a horizontal straight path
+                    //TODO: this
+                    newBlock = new CriticalPathMapBlock(x, y, leftOpen, topOpen, rightOpen, bottomOpen);
+                }
+
+            }
+            else if (numberOfOpenings == 2) {
+                newBlock = new CriticalPathMapBlock(x, y, leftOpen, topOpen, rightOpen, bottomOpen);
+            }
+            else
+            {
                 ////This is a NOT part of critical path
                 string dirPath = Application.dataPath + "/JSON/NonPathMapBlockLayout/";
                 String path = dirPath + JSONNameNonPathProbabilityMap[UnityEngine.Random.Range(0, JSONNameNonPathProbabilityMap.Count)] + ".JSON";
@@ -50,8 +88,8 @@ namespace Assets.Scripts.Map
                 //Read the text from directly from the test.txt file
                 StreamReader reader = new StreamReader(path);
                 String jsonText = reader.ReadToEnd();
-                NonPathMapBlock nonPathBlock = JsonUtility.FromJson<NonPathMapBlock>(jsonText);
-                nonPathBlock.AfterSerialize(x,y);
+                JSONMapBlock nonPathBlock = JsonUtility.FromJson<JSONMapBlock>(jsonText);
+                nonPathBlock.AfterSerialize(x, y);
                 newBlock = nonPathBlock;
             }
 
@@ -62,6 +100,10 @@ namespace Assets.Scripts.Map
             foreach (JSONLayout jlayout in NonPathJSONLayouts) {
                 jlayout.SaveToJSON();
             }
+            foreach (JSONLayout jlayout in StraightPathJSONLayouts)
+            {
+                jlayout.SaveToJSON();
+            }
         }
 
 
@@ -69,7 +111,7 @@ namespace Assets.Scripts.Map
         /// Builds and stores lists of JSONLayout and sets up a Probability Distribution map by name
         /// If requested, the factory will rebuild and save the actaul JSON files
         /// </summary>
-        static public void BuildAllJSONLayouts() {
+        static public void BuildAllNonPathJSONLayouts() {
             List<MapPosition> allCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(MapBlock.SIZE_OF_BLOCK - 1, MapBlock.SIZE_OF_BLOCK - 1));
             List<MapPosition> islandCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 3), new MapPosition(6, 6));
 
@@ -247,6 +289,29 @@ namespace Assets.Scripts.Map
 
         }
 
+        static public void BuildAllStraightPathJSONLayouts() {
+            #region //Normal Vertical Path Surrounded by Dense brush
+            JSONLayout JSONLayout1 = new JSONLayout();
+
+            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 0), new MapPosition(5,7));
+            List<MapPosition> outsideCoordsLeft = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(1, 7));
+            List<MapPosition> outsideCoordsRight = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 0), new MapPosition(7, 7));
+
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsLeft, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsLeft, DensityArea.eMapItems.thickGrass));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsRight, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsRight, DensityArea.eMapItems.thickGrass));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.05f, pathCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.05f, pathCoords, DensityArea.eMapItems.thickGrass));
+            JSONLayout1.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
+            JSONLayout1.frequency = JSONLayout.eFrequency.eHigh;
+            JSONLayout1.LayoutName = "FourWidthSimpleStraightPath";
+
+            StraightPathJSONLayouts.Add(JSONLayout1);
+            #endregion
+        }
+
+
     }
 
     class JSONLayout {
@@ -261,7 +326,7 @@ namespace Assets.Scripts.Map
         public string LayoutName;
 
         public void SaveToJSON() {
-            NonPathMapBlock realMapBlock = new NonPathMapBlock(0, 0);
+            JSONMapBlock realMapBlock = new JSONMapBlock(0, 0);
             realMapBlock.SetDensityAreas(this.DensityAreas);
 
             string jsonText = realMapBlock.GetJSONString();

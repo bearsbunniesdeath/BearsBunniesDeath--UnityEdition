@@ -25,7 +25,7 @@ public class HouseScript : MonoBehaviour, IPlayerLightDimmer{
         myRoofTransform = transform.Find("Roof");
         myOriginalRoofLocation = myRoofTransform.localScale;
         DimmingTime = 0.5f;
-        DimmingFactor = 0.35f;
+        DimmingFactor = 0.5f;
     }
 	
 	// Update is called once per frame

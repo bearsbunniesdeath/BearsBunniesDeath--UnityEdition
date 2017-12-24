@@ -125,14 +125,24 @@ namespace Assets.Scripts
             return Math.Abs(asInt - max) - 1;
         }
 
-        public static void RotateMapObjectsInBlock(List<MapObject> originalPosList, int blockSize) {
-            int centerPoint = blockSize / 2; 
+        public enum eClockWiseTurn {
+            eQuarter,
+            eHalf,
+            eThreeQuarter
+        }
+
+        public static void RotateMapObjectsInBlock(List<MapObject> originalPosList, eClockWiseTurn turnType) {
+            int centerPoint = MapBlock.SIZE_OF_BLOCK / 2; 
             foreach (MapObject MapObj in originalPosList) {
 
                 Math.Cos(2);
 
             }
 
+        }
+
+        public static int BoolToInt(bool inBool) {
+            return inBool ? 1 : 0;
         }
 
     }
