@@ -437,24 +437,35 @@ namespace Completed
             //Try a jittery step
             //Speed = Speed * UnityEngine.Random.Range(0.7f, 1.3f);
 
-            if (Input.GetKey(KeyCode.LeftArrow))
+            Debug.Log(Input.GetAxis("Horizontal"));
+            Debug.Log(Input.GetAxis("Vertical"));
+
+            float horVal = Input.GetAxis("Horizontal");
+            float vertVal = Input.GetAxis("Vertical");
+
+            //if (Input.GetKey(KeyCode.A))
+            if (horVal < -0.2f)
             {
                 velocity.x = -Speed;
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (horVal > 0.2f)
+            //else if (Input.GetKey(KeyCode.D))
             {
                 velocity.x = Speed;
             }
 
-            if (Input.GetKey(KeyCode.DownArrow))
+            //if (Input.GetKey(KeyCode.S))
+            if (vertVal < -0.2f)
             {
                 velocity.y = -Speed;
             }
-            else if (Input.GetKey(KeyCode.UpArrow))
+            //else if (Input.GetKey(KeyCode.W))
+            else if (vertVal > 0.2f)
             {
                 velocity.y = Speed;
             }
 
+ 
 
             if (velocity.x != 0 || velocity.y != 0)
             {
