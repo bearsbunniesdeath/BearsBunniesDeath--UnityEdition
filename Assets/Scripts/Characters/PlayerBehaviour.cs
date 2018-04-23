@@ -345,7 +345,7 @@ namespace Completed
                     ThickGrassScript asGrass = (ThickGrassScript)myCurrentDimmingElement;
 
                     //Only grass does this stuff
-                    asGrass.TakeDamage(inSpeed * Time.deltaTime);
+                    //asGrass.TakeDamage(inSpeed * Time.deltaTime);
                     if (asGrass != null)
                     {
                         return inSpeed * asGrass.SlowingFactor; //It might be destroyed after taking damage
