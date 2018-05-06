@@ -26,12 +26,15 @@ namespace Pathfinding.Util {
 		/** Internal pool */
 		static readonly List<List<T> > pool = new List<List<T> >();
 
+		static readonly List<List<T> > largePool = new List<List<T> >();
 		static readonly HashSet<List<T> > inPool = new HashSet<List<T> >();
 
 		/** When requesting a list with a specified capacity, search max this many lists in the pool before giving up.
 		 * Must be greater or equal to one.
 		 */
 		const int MaxCapacitySearchLength = 8;
+		const int LargeThreshold = 5000;
+		const int MaxLargePoolSize = 8;
 
 		/** Claim a list.
 		 * Returns a pooled list if any are in the pool.
@@ -51,46 +54,62 @@ namespace Pathfinding.Util {
 			}
 		}
 
+		static int FindCandidate (List<List<T> > pool, int capacity) {
+			// Loop through the last MaxCapacitySearchLength items
+			// and check if any item has a capacity greater or equal to the one that
+			// is desired. If so return it.
+			// Otherwise take the largest one or if there are no lists in the pool
+			// then allocate a new one with the desired capacity
+			List<T> list = null;
+			int listIndex = -1;
+			for (int i = 0; i < pool.Count && i < MaxCapacitySearchLength; i++) {
+				// ith last item
+				var candidate = pool[pool.Count-1-i];
+
+				// Find the largest list that is not too large (arbitrary decision to try to prevent some memory bloat if the list was not just a temporary list).
+				if ((list == null || candidate.Capacity > list.Capacity) && candidate.Capacity < capacity*16) {
+					list = candidate;
+					listIndex = pool.Count-1-i;
+
+					if (list.Capacity >= capacity) {
+						return listIndex;
+					}
+				}
+			}
+
+			return listIndex;
+		}
+
 		/** Claim a list with minimum capacity
 		 * Returns a pooled list if any are in the pool.
 		 * Otherwise it creates a new one.
 		 * After usage, this list should be released using the Release function (though not strictly necessary).
-		 * This list returned will have at least the capacity specified.
+		 * A subset of the pool will be searched for a list with a high enough capacity and one will be returned
+		 * if possible, otherwise the list with the largest capacity found will be returned.
 		 */
 		public static List<T> Claim (int capacity) {
 			lock (pool) {
-				// Loop through the last MaxCapacitySearchLength items
-				// and check if any item has a capacity greater or equal to the one that
-				// is desired. If so return it.
-				// Otherwise take the largest one and expand the capacity
-				// to the desired capacity or if there are no lists in the pool
-				// then allocate a new one with the desired capacity
-				List<T> list = null;
-				int listIndex = -1;
-				for (int i = 0; i < pool.Count && i < MaxCapacitySearchLength; i++) {
-					// ith last item
-					var candidate = pool[pool.Count-1-i];
+				var currentPool = pool;
+				var listIndex = FindCandidate(pool, capacity);
 
-					if (candidate.Capacity >= capacity) {
-						pool.RemoveAt(pool.Count-1-i);
-						inPool.Remove(candidate);
-						return candidate;
-					} else if (list == null || candidate.Capacity > list.Capacity) {
-						list = candidate;
-						listIndex = pool.Count-1-i;
+				if (capacity > LargeThreshold) {
+					var largeListIndex = FindCandidate(largePool, capacity);
+					if (largeListIndex != -1) {
+						currentPool = largePool;
+						listIndex = largeListIndex;
 					}
 				}
 
-				if (list == null) {
-					list = new List<T>(capacity);
+				if (listIndex == -1) {
+					return new List<T>(capacity);
 				} else {
-					list.Capacity = capacity;
+					var list = currentPool[listIndex];
 					// Swap current item and last item to enable a more efficient removal
-					pool[listIndex] = pool[pool.Count-1];
-					pool.RemoveAt(pool.Count-1);
 					inPool.Remove(list);
+					currentPool[listIndex] = currentPool[currentPool.Count-1];
+					currentPool.RemoveAt(currentPool.Count-1);
+					return list;
 				}
-				return list;
 			}
 		}
 
@@ -105,22 +124,46 @@ namespace Pathfinding.Util {
 			}
 		}
 
+
+		/** Releases a list and sets the variable to null.
+		 * After the list has been released it should not be used anymore.
+		 *
+		 * \throws System.InvalidOperationException
+		 * Releasing a list when it has already been released will cause an exception to be thrown.
+		 *
+		 * \see #Claim
+		 */
+		public static void Release (ref List<T> list) {
+			Release(list);
+			list = null;
+		}
+
 		/** Releases a list.
 		 * After the list has been released it should not be used anymore.
 		 *
 		 * \throws System.InvalidOperationException
 		 * Releasing a list when it has already been released will cause an exception to be thrown.
 		 *
-		 * \see Claim
+		 * \see #Claim
 		 */
 		public static void Release (List<T> list) {
-			list.Clear();
+			list.ClearFast();
 
 			lock (pool) {
 				if (!inPool.Add(list)) {
 					throw new InvalidOperationException("You are trying to pool a list twice. Please make sure that you only pool it once.");
 				}
-				pool.Add(list);
+				if (list.Capacity > LargeThreshold) {
+					largePool.Add(list);
+
+					// Remove the list which was used the longest time ago from the pool if it
+					// exceeds the maximum size as it probably just contributes to memory bloat
+					if (largePool.Count > MaxLargePoolSize) {
+						largePool.RemoveAt(0);
+					}
+				} else {
+					pool.Add(list);
+				}
 			}
 		}
 

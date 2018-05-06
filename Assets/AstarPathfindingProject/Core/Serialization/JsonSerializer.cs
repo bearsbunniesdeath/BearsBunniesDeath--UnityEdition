@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
-using Pathfinding;
 using Pathfinding.Util;
 using Pathfinding.WindowsStore;
 
@@ -13,7 +12,6 @@ using Pathfinding.Serialization.Zip;
 using ZipEntry = System.IO.Compression.ZipArchiveEntry;
 using ZipFile = System.IO.Compression.ZipArchive;
 #else
-using CompatFileStream = System.IO.FileStream;
 using Pathfinding.Ionic.Zip;
 #endif
 
@@ -58,7 +56,7 @@ namespace Pathfinding.Serialization {
 		public GraphNode DeserializeNodeReference () {
 			var id = reader.ReadInt32();
 
-			if (id2NodeMapping == null) throw new Exception("Calling DeserializeNodeReference when serializing");
+			if (id2NodeMapping == null) throw new Exception("Calling DeserializeNodeReference when not deserializing node references");
 
 			if (id == -1) return null;
 			GraphNode node = id2NodeMapping[id];
@@ -205,6 +203,15 @@ namespace Pathfinding.Serialization {
 		 * thus only be called from a single thread and should not be called while using an earlier got string builder.
 		 */
 		static System.Text.StringBuilder GetStringBuilder () { _stringBuilder.Length = 0; return _stringBuilder; }
+
+		/** Cached version object for 3.8.3 */
+		public static readonly System.Version V3_8_3 = new System.Version(3, 8, 3);
+
+		/** Cached version object for 3.9.0 */
+		public static readonly System.Version V3_9_0 = new System.Version(3, 9, 0);
+
+		/** Cached version object for 4.1.0 */
+		public static readonly System.Version V4_1_0 = new System.Version(4, 1, 0);
 
 		public AstarSerializer (AstarData data) {
 			this.data = data;
@@ -358,7 +365,6 @@ namespace Pathfinding.Serialization {
 					if (node.NodeIndex == -1) {
 						Debug.LogError("Graph contains destroyed nodes. This is a bug.");
 					}
-					return true;
 				});
 			}
 			return maxIndex;
@@ -366,11 +372,11 @@ namespace Pathfinding.Serialization {
 
 		static byte[] SerializeNodeIndices (NavGraph[] graphs) {
 			var stream = new MemoryStream();
-			var wr = new BinaryWriter(stream);
+			var writer = new BinaryWriter(stream);
 
 			int maxNodeIndex = GetMaxNodeIndexInAllGraphs(graphs);
 
-			wr.Write(maxNodeIndex);
+			writer.Write(maxNodeIndex);
 
 			// While writing node indices, verify that the max node index is the same
 			// (user written graphs might have gotten it wrong)
@@ -379,8 +385,7 @@ namespace Pathfinding.Serialization {
 				if (graphs[i] == null) continue;
 				graphs[i].GetNodes(node => {
 					maxNodeIndex2 = Math.Max(node.NodeIndex, maxNodeIndex2);
-					wr.Write(node.NodeIndex);
-					return true;
+					writer.Write(node.NodeIndex);
 				});
 			}
 
@@ -388,7 +393,7 @@ namespace Pathfinding.Serialization {
 			if (maxNodeIndex2 != maxNodeIndex) throw new Exception("Some graphs are not consistent in their GetNodes calls, sequential calls give different results.");
 
 			byte[] bytes = stream.ToArray();
-			wr.Close();
+			writer.Close();
 
 			return bytes;
 		}
@@ -396,12 +401,12 @@ namespace Pathfinding.Serialization {
 		/** Serializes info returned by NavGraph.SerializeExtraInfo */
 		static byte[] SerializeGraphExtraInfo (NavGraph graph) {
 			var stream = new MemoryStream();
-			var wr = new BinaryWriter(stream);
-			var ctx = new GraphSerializationContext(wr);
+			var writer = new BinaryWriter(stream);
+			var ctx = new GraphSerializationContext(writer);
 
-			graph.SerializeExtraInfo(ctx);
+			((IGraphInternals)graph).SerializeExtraInfo(ctx);
 			byte[] bytes = stream.ToArray();
-			wr.Close();
+			writer.Close();
 
 			return bytes;
 		}
@@ -413,14 +418,11 @@ namespace Pathfinding.Serialization {
 		 */
 		static byte[] SerializeGraphNodeReferences (NavGraph graph) {
 			var stream = new MemoryStream();
-			var wr = new BinaryWriter(stream);
-			var ctx = new GraphSerializationContext(wr);
+			var writer = new BinaryWriter(stream);
+			var ctx = new GraphSerializationContext(writer);
 
-			graph.GetNodes(node => {
-				node.SerializeReferences(ctx);
-				return true;
-			});
-			wr.Close();
+			graph.GetNodes(node => node.SerializeReferences(ctx));
+			writer.Close();
 
 			var bytes = stream.ToArray();
 			return bytes;
@@ -453,30 +455,11 @@ namespace Pathfinding.Serialization {
 
 		byte[] SerializeNodeLinks () {
 			var stream = new MemoryStream();
-			var wr = new BinaryWriter(stream);
-			var ctx = new GraphSerializationContext(wr);
+			var writer = new BinaryWriter(stream);
+			var ctx = new GraphSerializationContext(writer);
 
 			NodeLink2.SerializeReferences(ctx);
 			return stream.ToArray();
-		}
-
-		public void SerializeEditorSettings (GraphEditorBase[] editors) {
-			if (editors == null || !settings.editorSettings) return;
-
-			for (int i = 0; i < editors.Length; i++) {
-				if (editors[i] == null) return;
-
-				var output = GetStringBuilder();
-				TinyJsonSerializer.Serialize(editors[i], output);
-				var bytes = encoding.GetBytes(output.ToString());
-
-				//Less or equal to 2 bytes means that nothing was saved (file is "{}")
-				if (bytes.Length <= 2)
-					continue;
-
-				AddChecksum(bytes);
-				AddEntry("graph"+i+"_editor"+jsonExt, bytes);
-			}
 		}
 
 		#endregion
@@ -528,7 +511,7 @@ namespace Pathfinding.Serialization {
 					"\nHowever node data (not settings) can get corrupted between versions (even though I try my best to keep compatibility), so it is recommended " +
 					"to recalculate any caches (those for faster startup) and resave any files. Even if it seems to load fine, it might cause subtle bugs.\n");
 			} else if (FullyDefinedVersion(meta.version) < FullyDefinedVersion(AstarPath.Version)) {
-				Debug.LogWarning("Trying to load data from an older version of the A* Pathfinding Project\nCurrent version: "+AstarPath.Version+" Data version: "+meta.version+
+				Debug.LogWarning("Upgrading serialized pathfinding data from version " + meta.version + " to " + AstarPath.Version +
 					"\nThis is usually fine, it just means you have upgraded to a new version." +
 					"\nHowever node data (not settings) can get corrupted between versions (even though I try my best to keep compatibility), so it is recommended " +
 					"to recalculate any caches (those for faster startup) and resave any files. Even if it seems to load fine, it might cause subtle bugs.\n");
@@ -553,13 +536,13 @@ namespace Pathfinding.Serialization {
 
 		NavGraph DeserializeGraph (int zipIndex, int graphIndex) {
 			// Get the graph type from the metadata we deserialized earlier
-			var tp = meta.GetGraphType(zipIndex);
+			var graphType = meta.GetGraphType(zipIndex);
 
 			// Graph was null when saving, ignore
-			if (System.Type.Equals(tp, null)) return null;
+			if (System.Type.Equals(graphType, null)) return null;
 
 			// Create a new graph of the right type
-			NavGraph graph = data.CreateGraph(tp);
+			NavGraph graph = data.CreateGraph(graphType);
 			graph.graphIndex = (uint)(graphIndex);
 
 			var jsonName = "graph" + zipIndex + jsonExt;
@@ -567,11 +550,11 @@ namespace Pathfinding.Serialization {
 
 			if (ContainsEntry(jsonName)) {
 				// Read the graph settings
-				TinyJsonDeserializer.Deserialize(GetString(GetEntry(jsonName)), tp, graph);
+				TinyJsonDeserializer.Deserialize(GetString(GetEntry(jsonName)), graphType, graph);
 			} else if (ContainsEntry(binName)) {
 				var reader = GetBinaryReader(GetEntry(binName));
 				var ctx = new GraphSerializationContext(reader, null, graph.graphIndex, meta);
-				graph.DeserializeSettingsCompatibility(ctx);
+				((IGraphInternals)graph).DeserializeSettingsCompatibility(ctx);
 			} else {
 				throw new FileNotFoundException("Could not find data for graph " + zipIndex + " in zip. Entry 'graph" + zipIndex + jsonExt + "' does not exist");
 			}
@@ -616,7 +599,7 @@ namespace Pathfinding.Serialization {
 			var ctx = new GraphSerializationContext(reader, null, graph.graphIndex, meta);
 
 			// Call the graph to process the data
-			graph.DeserializeExtraInfo(ctx);
+			((IGraphInternals)graph).DeserializeExtraInfo(ctx);
 			return true;
 		}
 
@@ -628,7 +611,6 @@ namespace Pathfinding.Serialization {
 					if (node.Destroyed) {
 						result = true;
 					}
-					return true;
 				});
 			}
 			return result;
@@ -651,16 +633,19 @@ namespace Pathfinding.Serialization {
 					graphs[i].GetNodes(node => {
 						var index = reader.ReadInt32();
 						int2Node[index] = node;
-						return true;
 					});
 				}
 			} catch (Exception e) {
 				throw new Exception("Some graph(s) has thrown an exception during GetNodes, or some graph(s) have deserialized more or fewer nodes than were serialized", e);
 			}
 
+#if !NETFX_CORE
+			// For Windows Store apps the BaseStream.Position property is not supported
+			// so we have to disable this error check on that platform
 			if (reader.BaseStream.Position != reader.BaseStream.Length) {
 				throw new Exception((reader.BaseStream.Length / 4) + " nodes were serialized, but only data for " + (reader.BaseStream.Position / 4) + " nodes was found. The data looks corrupt.");
 			}
+#endif
 
 			reader.Close();
 			return int2Node;
@@ -675,10 +660,7 @@ namespace Pathfinding.Serialization {
 			var reader = GetBinaryReader(entry);
 			var ctx = new GraphSerializationContext(reader, int2Node, graph.graphIndex, meta);
 
-			graph.GetNodes(node => {
-				node.DeserializeReferences(ctx);
-				return true;
-			});
+			graph.GetNodes(node => node.DeserializeReferences(ctx));
 		}
 
 		/** Deserializes extra graph info.
@@ -730,7 +712,8 @@ namespace Pathfinding.Serialization {
 		/** Calls PostDeserialization on all loaded graphs */
 		public void PostDeserialization () {
 			for (int i = 0; i < graphs.Length; i++) {
-				graphs[i].PostDeserialization();
+				var ctx = new GraphSerializationContext(null, null, 0, meta);
+				((IGraphInternals)graphs[i]).PostDeserialization(ctx);
 			}
 		}
 
@@ -739,22 +722,16 @@ namespace Pathfinding.Serialization {
 		 * It searches for a matching graph (matching if graphEditor.target == graph) for every graph editor.
 		 * Multiple graph editors should not refer to the same graph.\n
 		 * \note Stored in files named "graph#_editor.json" where # is the graph number.
+		 *
+		 * \note This method is only used for compatibility, newer versions store everything in the graph.serializedEditorSettings field which is already serialized.
 		 */
-		public void DeserializeEditorSettings (GraphEditorBase[] graphEditors) {
-			if (graphEditors == null) return;
+		public void DeserializeEditorSettingsCompatibility () {
+			for (int i = 0; i < graphs.Length; i++) {
+				var zipIndex = graphIndexInZip[graphs[i]];
+				ZipEntry entry = GetEntry("graph"+zipIndex+"_editor"+jsonExt);
+				if (entry == null) continue;
 
-			for (int i = 0; i < graphEditors.Length; i++) {
-				if (graphEditors[i] == null) continue;
-				for (int j = 0; j < graphs.Length; j++) {
-					if (graphEditors[i].target != graphs[j]) continue;
-
-					var zipIndex = graphIndexInZip[graphs[j]];
-					ZipEntry entry = GetEntry("graph"+zipIndex+"_editor"+jsonExt);
-					if (entry == null) continue;
-
-					TinyJsonDeserializer.Deserialize(GetString(entry), graphEditors[i].GetType(), graphEditors[i]);
-					break;
-				}
+				(graphs[i] as IGraphInternals).SerializedEditorSettings = GetString(entry);
 			}
 		}
 
@@ -763,11 +740,11 @@ namespace Pathfinding.Serialization {
 #if NETFX_CORE
 			return new BinaryReader(entry.Open());
 #else
-			var mem = new System.IO.MemoryStream();
+			var stream = new System.IO.MemoryStream();
 
-			entry.Extract(mem);
-			mem.Position = 0;
-			return new System.IO.BinaryReader(mem);
+			entry.Extract(stream);
+			stream.Position = 0;
+			return new System.IO.BinaryReader(stream);
 #endif
 		}
 
@@ -869,26 +846,26 @@ namespace Pathfinding.Serialization {
 		/** Type names for all graphs */
 		public List<string> typeNames;
 
-		/** Returns the Type of graph number \a i */
-		public Type GetGraphType (int i) {
+		/** Returns the Type of graph number \a index */
+		public Type GetGraphType (int index) {
 			// The graph was null when saving. Ignore it
-			if (String.IsNullOrEmpty(typeNames[i])) return null;
+			if (String.IsNullOrEmpty(typeNames[index])) return null;
 
 #if ASTAR_FAST_NO_EXCEPTIONS || UNITY_WEBGL
 			System.Type[] types = AstarData.DefaultGraphTypes;
 
 			Type type = null;
 			for (int j = 0; j < types.Length; j++) {
-				if (types[j].FullName == typeNames[i]) type = types[j];
+				if (types[j].FullName == typeNames[index]) type = types[j];
 			}
 #else
 			// Note calling through assembly is more stable on e.g WebGL
-			Type type = WindowsStoreCompatibility.GetTypeInfo(typeof(AstarPath)).Assembly.GetType(typeNames[i]);
+			Type type = WindowsStoreCompatibility.GetTypeInfo(typeof(AstarPath)).Assembly.GetType(typeNames[index]);
 #endif
 			if (!System.Type.Equals(type, null))
 				return type;
 
-			throw new Exception("No graph of type '" + typeNames[i] + "' could be created, type does not exist");
+			throw new Exception("No graph of type '" + typeNames[index] + "' could be created, type does not exist");
 		}
 	}
 
@@ -913,9 +890,9 @@ namespace Pathfinding.Serialization {
 		/** Serialization settings for only saving graph settings */
 		public static SerializeSettings Settings {
 			get {
-				var s = new SerializeSettings();
-				s.nodes = false;
-				return s;
+				return new SerializeSettings {
+						   nodes = false
+				};
 			}
 		}
 	}
