@@ -59,6 +59,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 {
                     myState = PlayerMovementState.eDashing;
                     Debug.Log("Start Dash.");
+                    //Turn on ground level jump collider so we can "jump" over short objects
+                    this.transform.GetChild(0).gameObject.SetActive(false);
+
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
                     break;
@@ -79,6 +82,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 if (myCurrentDashTimer < 0.0f) {
                     myState = PlayerMovementState.eDashCooldown;
                     myCurrentDashCooldown = DASH_COOLDOWN;
+                    this.transform.GetChild(0).gameObject.SetActive(true);
                     break;
                 }
                 myRigidBody.velocity = direction.normalized * DASH_SPEED;
