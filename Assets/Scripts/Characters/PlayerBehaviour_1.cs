@@ -13,6 +13,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         eTired
     }
 
+    public bool IsInvincible = false;
+    public bool IsDead = false;
+
     private Rigidbody2D myRigidBody;
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private ISpeedInhibitor mySpeedInhibitor;
@@ -39,7 +42,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        UpdateMovementFromInput();
+        if (!IsDead) {
+            UpdateMovementFromInput();
+        }
     }
 
     /// <summary>
@@ -167,6 +172,18 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 mySpeedInhibitor = breakable;
             }
         }
+
+            //Check if the tag of the trigger collided with is Exit.
+            if (other.tag == "Bear")
+            {
+                if (!IsInvincible)
+                {
+                    Kill();
+                }
+
+                //myRenderer.material.SetColor("_Color", Color.black);
+            }
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -184,5 +201,13 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         }
     }
 
+    private void Kill()
+    {
+        IsDead = true;
+        myRigidBody.freezeRotation = false;
+    }
 
 }
+
+
+

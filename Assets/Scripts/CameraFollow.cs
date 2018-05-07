@@ -21,12 +21,12 @@ public class CameraFollow : MonoBehaviour
 
 
     private Transform playerTrans;       // Reference to the player's transform.
-    private PlayerBehaviour playerScript;
+    private PlayerBehaviour_1 playerScript;
 
     void Awake()
     {
         // Setting up the reference.
-        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour_1>();
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
@@ -81,19 +81,19 @@ public class CameraFollow : MonoBehaviour
         //targetX = Mathf.Clamp(targetX, minXAndY.x, maxXAndY.x);
         //targetY = Mathf.Clamp(targetY, minXAndY.y, maxXAndY.y);
 
-        if (!playerScript.IsInDarkArea())
-        {
-            //Get a darkness factor based on player distace from camera from 0 - 2 units
-            float maxDistance = 2f;
-            float darknessFactor = System.Math.Max(maxDistance - GetDistanceIgnoringZCoord(transform.position, playerTrans.position), 0) / maxDistance;
-            float maxBrightness = 0.1f;
-            Color skyColor = new Color(darknessFactor * maxBrightness, darknessFactor * maxBrightness, darknessFactor * maxBrightness, 1F);
-            RenderSettings.ambientSkyColor = skyColor;
-        }
-        else
-        {
-            RenderSettings.ambientSkyColor = Color.black;
-        }
+        //if (!playerScript.IsInDarkArea())
+        //{
+        //    //Get a darkness factor based on player distace from camera from 0 - 2 units
+        //    float maxDistance = 2f;
+        //    float darknessFactor = System.Math.Max(maxDistance - GetDistanceIgnoringZCoord(transform.position, playerTrans.position), 0) / maxDistance;
+        //    float maxBrightness = 0.1f;
+        //    Color skyColor = new Color(darknessFactor * maxBrightness, darknessFactor * maxBrightness, darknessFactor * maxBrightness, 1F);
+        //    RenderSettings.ambientSkyColor = skyColor;
+        //}
+        //else
+        //{
+        //    RenderSettings.ambientSkyColor = Color.black;
+        //}
 
         // Set the camera's position to the target position with the same z component.
         transform.position = new Vector3(targetX, targetY, transform.position.z);
