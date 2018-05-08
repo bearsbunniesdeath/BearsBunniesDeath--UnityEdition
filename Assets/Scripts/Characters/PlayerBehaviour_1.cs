@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class PlayerBehaviour_1 : MonoBehaviour {
 
+    private const string GROUND_LEVEL_COLLIDER_STRING = "GroundLevelCollider";
+    private const string ITEM_MANAGER_STRING = "ItemManager";
+
     private enum PlayerMovementState {
         eNormal,
         eDashing,
@@ -16,7 +19,10 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public bool IsInvincible = false;
     public bool IsDead = false;
 
+    //My components and child
     private Rigidbody2D myRigidBody;
+    private ItemManagerScript myItemManager;
+
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private ISpeedInhibitor mySpeedInhibitor;
     private const float NORMAL_SPEED = 4.0f;
@@ -38,12 +44,16 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     // Use this for initialization
     void Start () {
         myRigidBody = GetComponent<Rigidbody2D>();
+        myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (!IsDead) {
             UpdateMovementFromInput();
+            if (Input.GetKeyDown(KeyCode.LeftShift)){
+                myItemManager.AttemptPopStack();
+            }
         }
     }
 
@@ -65,7 +75,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     myState = PlayerMovementState.eDashing;
                     Debug.Log("Start Dash.");
                     //Turn on ground level jump collider so we can "jump" over short objects
-                    this.transform.GetChild(0).gameObject.SetActive(false);
+                    this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
 
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
@@ -87,7 +97,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 if (myCurrentDashTimer < 0.0f) {
                     myState = PlayerMovementState.eDashCooldown;
                     myCurrentDashCooldown = DASH_COOLDOWN;
-                    this.transform.GetChild(0).gameObject.SetActive(true);
+                    this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(true);
                     break;
                 }
                 myRigidBody.velocity = direction.normalized * DASH_SPEED;
@@ -162,7 +172,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Enter Collider");
+        //TODO: 1: Put this in a helper.
         MonoBehaviour[] list = other.gameObject.GetComponents<MonoBehaviour>();
         foreach (MonoBehaviour mb in list)
         {
@@ -173,16 +183,14 @@ public class PlayerBehaviour_1 : MonoBehaviour {
             }
         }
 
-            //Check if the tag of the trigger collided with is Exit.
-            if (other.tag == "Bear")
+        //Check if the tag of the trigger collided with is Exit.
+        if (other.tag == "Bear")
+        {
+            if (!IsInvincible)
             {
-                if (!IsInvincible)
-                {
-                    Kill();
-                }
-
-                //myRenderer.material.SetColor("_Color", Color.black);
+                Kill();
             }
+        }
         
     }
 
@@ -205,6 +213,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     {
         IsDead = true;
         myRigidBody.freezeRotation = false;
+        //myRenderer.material.SetColor("_Color", Color.black);
     }
 
 }
