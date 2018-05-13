@@ -10,6 +10,8 @@ public class bombScript : MonoBehaviour, IHoldableObject {
 
     private Rigidbody2D myRigidBody;
     private Light myLight;
+    private float myDestroyMeTimer = 0f;
+    private const float DESTROY_ME_TIME = 10f; //Time so the explosion sound can occur, then we destory this object
     public const float ForceMagnitude = 1500f;
     public const float TriggerRange = 0.5f;
 
@@ -61,7 +63,7 @@ public class bombScript : MonoBehaviour, IHoldableObject {
     {
         get
         {
-            return !IsSet;
+            return !IsSet && myDestroyMeTimer == 0;
         }
     }
 
@@ -89,6 +91,13 @@ public class bombScript : MonoBehaviour, IHoldableObject {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (myDestroyMeTimer > 0f) {
+            myDestroyMeTimer -= Time.deltaTime;
+            if (myDestroyMeTimer <= 0f) {
+                Destroy(this.gameObject);
+            }
+        }
 
         if (myLight.intensity > 0) {
             myLight.intensity = myLight.intensity - (Time.deltaTime);
@@ -141,10 +150,10 @@ public class bombScript : MonoBehaviour, IHoldableObject {
         myLight.intensity = 1.0f;
 
         explosionHelper.Explode(ExplosionSound, myAudioSource, gameObject, ForceMagnitude, 1);
-
+        this.GetComponent<SpriteRenderer>().sprite = null;
+        myDestroyMeTimer = DESTROY_ME_TIME;
         IsSet = false;
-        GetComponent<SpriteRenderer>().sprite = null;
-
+        //TODO: Paint the floor with an explosion mark
     }
 
     private void OnTriggerExit2D(Collider2D other)

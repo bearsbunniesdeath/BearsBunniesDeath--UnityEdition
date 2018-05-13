@@ -14,7 +14,7 @@ namespace Assets.Scripts.Environment
         /// </summary>
         Rigidbody2D myDamagingRigidBody = null;
         float MAX_HEALTH = 1.5f;
-        float SLOWING_FACTOR = 0.5f;
+        float SLOWING_FACTOR = 0.1f;
         public float SlowingFactor;
         float DIMMING_FACTOR = 0.5f;
 

@@ -29,7 +29,7 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
     private bool myHasEdibleCarcass = true;
 
     private bool myIsHeld;
-    private const float MAX_DONT_PICK_UP_TIME = 1f;
+    private const float MAX_DONT_PICK_UP_TIME = 0.5f;
     private float myDontPickUpTime = 0f;
 
     private Vector2 targetHopPoint;
@@ -56,9 +56,11 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
                 }
 
                 if (IsAlive) {
+                    this.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
                     Start();
-                    myDontPickUpTime = MAX_DONT_PICK_UP_TIME;
+                    //Allowing touching stuff now
                     this.GetComponent<Collider2D>().enabled = true;
+                    myDontPickUpTime = MAX_DONT_PICK_UP_TIME;
                 }
             } 
         }
@@ -146,6 +148,9 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
 
         if (myDontPickUpTime > 0f) {
             myDontPickUpTime -= Time.deltaTime;
+            if (myDontPickUpTime < 0f) {
+
+            }
         }
 
         if (myMatingTimer.CheckForDone() && Mate != null) {

@@ -28,7 +28,10 @@ public class ItemManagerScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other) {
         //TODO: 1: Put this in a helper.
-        MonoBehaviour[] list = other.gameObject.GetComponents<MonoBehaviour>();
+        MonoBehaviour[] list = other.gameObject.GetComponentsInParent<MonoBehaviour>();
+        if (list.Length == 0) {
+            list = other.gameObject.GetComponents<MonoBehaviour>();
+        }
         foreach (MonoBehaviour mb in list)
         {
             if (mb is IHoldableObject)

@@ -25,6 +25,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private ISpeedInhibitor mySpeedInhibitor;
+    private const float NORMAL_DRAG = 5.0f;
     private const float SPEED_TO_FORCE = 12.0f;
     private const float MAX_SPEED = 10.0f;
     private const float DASH_FORCE = 1000;
@@ -88,11 +89,6 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 }
 
                 float speed = NORMAL_SPEED;
-
-                if (mySpeedInhibitor != null)
-                {
-                    speed = NORMAL_SPEED * mySpeedInhibitor.SlowFactor;
-                }
 
                 if (myRigidBody.velocity.magnitude < MAX_SPEED) {
                     myRigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE);
@@ -195,6 +191,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
             {
                 ISpeedInhibitor breakable = (ISpeedInhibitor)mb;
                 mySpeedInhibitor = breakable;
+                this.myRigidBody.drag = (1 / mySpeedInhibitor.SlowFactor) * NORMAL_DRAG;
             }
         }
 
@@ -219,6 +216,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 if (mb is ISpeedInhibitor)
                 {
                     mySpeedInhibitor = null;
+                    this.myRigidBody.drag =  NORMAL_DRAG;
                 }
             }
         }
