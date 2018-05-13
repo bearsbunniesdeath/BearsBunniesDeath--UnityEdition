@@ -65,6 +65,21 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         }
     }
 
+    internal void Reset()
+    {
+        IsDead = false;
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+        if (myItemManager != null) {
+            myItemManager.Clear();
+        }
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        GetComponent<Rigidbody2D>().angularVelocity = 0;
+        if (myRigidBody != null)
+        {
+            myRigidBody.freezeRotation = true;
+        }
+    }
+
     /// <summary>
     /// Do all movement logic for one Update
     /// </summary>

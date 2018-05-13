@@ -73,5 +73,10 @@ public class ItemManagerScript : MonoBehaviour {
             removeMe.IsHeld = false;
         }
     }
+
+    internal void Clear()
+    {
+        myHeldObjects.Clear();
+    }
 }
 

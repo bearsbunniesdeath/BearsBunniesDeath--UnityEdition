@@ -46,10 +46,6 @@ public class HUDScript : MonoBehaviour
             }
         }
 
-        myStaminaBar = GameObject.Find("StaminaBar").GetComponent<Image>();
-        mySecondWindBar = GameObject.Find("SecondWindBar").GetComponent<Image>();
-
-        mySecondWindBar.rectTransform.localScale = new Vector3(0, 1, 1);
     }
 
     // Update is called once per frame

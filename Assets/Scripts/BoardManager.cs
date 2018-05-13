@@ -57,7 +57,7 @@ public class BoardManager : MonoBehaviour {
 		//Place the player
         player = GameObject.FindGameObjectWithTag("Player").transform;
         player.position = new Vector3(myMap.StartPoint.x, myMap.StartPoint.y);
-        PlayerBehaviour playerScript = player.GetComponent<PlayerBehaviour>();
+        PlayerBehaviour_1 playerScript = player.GetComponent<PlayerBehaviour_1>();
             playerScript.Reset();
 
         myHUD = GameObject.FindGameObjectWithTag("HUD").GetComponent<HUDScript>();
