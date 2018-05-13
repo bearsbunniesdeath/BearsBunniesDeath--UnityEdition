@@ -26,9 +26,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private  List<ISpeedInhibitor> mySpeedInhibitors;
-    private const float NORMAL_DRAG = 5.0f;
-    private const float SPEED_TO_FORCE = 12.0f;
-    private const float MAX_SPEED = 10.0f;
+    private const float NORMAL_DRAG = 6f;
+    private const float SPEED_TO_FORCE = 10.0f;
+    private const float MAX_SPEED = 4.0f;
     private const float DASH_FORCE = 1000;
 
     private const float NORMAL_SPEED = 4.0f;

@@ -13,8 +13,8 @@ namespace Assets.Scripts.Environment
         /// A rigid body from a moving object that damages the grass based on it's speed
         /// </summary>
         Rigidbody2D myDamagingRigidBody = null;
-        float MAX_HEALTH = 1.5f;
-        float SLOWING_FACTOR = 0.1f;
+        float MAX_HEALTH = 1.0f;
+        float SLOWING_FACTOR = 0.19f;
         public float SlowingFactor;
         float DIMMING_FACTOR = 0.5f;
 
