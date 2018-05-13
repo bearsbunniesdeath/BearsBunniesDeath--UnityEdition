@@ -43,10 +43,10 @@ namespace Assets.Scripts
                         explodedBear.Stun();
                     }
 
-                    if (go.GetComponent<PlayerBehaviour>() != null)
+                    if (go.GetComponent<PlayerBehaviour_1>() != null)
                     {
-                        PlayerBehaviour explodedplayer = go.GetComponent<PlayerBehaviour>();
-                        if (!explodedplayer.myIsInvincible)
+                        PlayerBehaviour_1 explodedplayer = go.GetComponent<PlayerBehaviour_1>();
+                        if (!explodedplayer.IsInvincible)
                         {
                             explodedplayer.Kill();
                         }

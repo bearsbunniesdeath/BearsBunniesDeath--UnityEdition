@@ -905,6 +905,21 @@ Prefab:
       propertyPath: m_Name
       value: GroundLevelCollider
       objectReference: {fileID: 0}
+    - target: {fileID: 50291875325630632, guid: 3b7abb58fa6dfca4bb012f7bc78c7656,
+        type: 2}
+      propertyPath: m_LinearDrag
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000777571722328, guid: 3b7abb58fa6dfca4bb012f7bc78c7656,
+        type: 2}
+      propertyPath: SPEED_TO_FORCE
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000777571722328, guid: 3b7abb58fa6dfca4bb012f7bc78c7656,
+        type: 2}
+      propertyPath: MAX_SPEED
+      value: 16
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3b7abb58fa6dfca4bb012f7bc78c7656, type: 2}
   m_IsPrefabParent: 0

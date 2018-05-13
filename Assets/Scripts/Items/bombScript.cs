@@ -45,11 +45,13 @@ public class bombScript : MonoBehaviour, IHoldableObject {
         set
         {
             if (!value && myIsHeld) {
-//Don't let the player reset timer by picking up, promote cooking bomb
+                //Don't let the player reset timer by picking up, promote cooking bomb
                 if (myTimeToArm == 0) {
                     myTimeToArm = MAX_TIME_TO_ARM;
                 }
                 //SoundEffectHelper.MakeNoise(myAudioSource, TickNoise);
+            } else if (value && !myIsHeld) {
+
             }
             myIsHeld = value;
         }

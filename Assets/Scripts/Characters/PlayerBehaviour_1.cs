@@ -25,6 +25,10 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private ISpeedInhibitor mySpeedInhibitor;
+    private const float SPEED_TO_FORCE = 12.0f;
+    private const float MAX_SPEED = 10.0f;
+    private const float DASH_FORCE = 1000;
+
     private const float NORMAL_SPEED = 4.0f;
     private const float DASH_SPEED = 16.0f;
     private const float DASH_DISTANCE = 1.5f;
@@ -51,7 +55,8 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 	void Update () {
         if (!IsDead) {
             UpdateMovementFromInput();
-            if (Input.GetKeyDown(KeyCode.LeftShift)){
+            if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown("joystick button 0"))
+            {
                 myItemManager.AttemptPopStack();
             }
         }
@@ -70,13 +75,13 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         switch (myState)
         {
             case PlayerMovementState.eNormal:
-                if (myCurrentNumberOfDashes > 0 && Input.GetKeyDown(KeyCode.Space))
+                if (myCurrentNumberOfDashes > 0 && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick button 4")))
                 {
                     myState = PlayerMovementState.eDashing;
                     Debug.Log("Start Dash.");
                     //Turn on ground level jump collider so we can "jump" over short objects
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
-
+                    myRigidBody.AddForce(direction.normalized * DASH_FORCE);
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
                     break;
@@ -89,7 +94,10 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     speed = NORMAL_SPEED * mySpeedInhibitor.SlowFactor;
                 }
 
-                myRigidBody.velocity = direction.normalized * speed;
+                if (myRigidBody.velocity.magnitude < MAX_SPEED) {
+                    myRigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE);
+                }
+
                 break;
 
             case PlayerMovementState.eDashing:
@@ -100,7 +108,12 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(true);
                     break;
                 }
-                myRigidBody.velocity = direction.normalized * DASH_SPEED;
+
+                if (myRigidBody.velocity.magnitude < MAX_SPEED)
+                {
+      
+                }
+
                 break;
 
             case PlayerMovementState.eDashCooldown:
@@ -110,7 +123,11 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     myState = PlayerMovementState.eNormal;
                     break;
                 }
-                myRigidBody.velocity = direction.normalized * NORMAL_SPEED * 0.2f;
+                if (myRigidBody.velocity.magnitude < MAX_SPEED)
+                {
+                    myRigidBody.AddForce(direction.normalized * NORMAL_SPEED * 0.2f * SPEED_TO_FORCE);
+                }
+
                 break;
         }
 
@@ -145,8 +162,6 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
         float horVal = Input.GetAxis("Horizontal");
         float vertVal = Input.GetAxis("Vertical");
-
-        //Debug.Log("Horizontal: " + horVal + "Vertical: " + vertVal);
 
         if (horVal < -JOYSTICK_THRESHOLD || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -209,7 +224,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         }
     }
 
-    private void Kill()
+    public void Kill()
     {
         IsDead = true;
         myRigidBody.freezeRotation = false;
