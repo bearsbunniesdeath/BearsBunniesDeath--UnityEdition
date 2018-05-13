@@ -69,6 +69,7 @@ public class ItemManagerScript : MonoBehaviour {
             IHoldableObject removeMe = myHeldObjects[myHeldObjects.Count - 1];
             myHeldObjects.Remove(removeMe);
             removeMe.ObjectTransform.parent = null;
+            removeMe.ObjectTransform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             removeMe.IsHeld = false;
         }
     }

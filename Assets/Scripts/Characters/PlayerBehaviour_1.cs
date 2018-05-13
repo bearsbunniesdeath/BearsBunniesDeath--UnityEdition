@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerBehaviour_1 : MonoBehaviour {
@@ -24,7 +25,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private ItemManagerScript myItemManager;
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
-    private ISpeedInhibitor mySpeedInhibitor;
+    private  List<ISpeedInhibitor> mySpeedInhibitors;
     private const float NORMAL_DRAG = 5.0f;
     private const float SPEED_TO_FORCE = 12.0f;
     private const float MAX_SPEED = 10.0f;
@@ -50,6 +51,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     void Start () {
         myRigidBody = GetComponent<Rigidbody2D>();
         myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
+        mySpeedInhibitors = new List<ISpeedInhibitor>();
     }
 	
 	// Update is called once per frame
@@ -132,7 +134,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private void RecoveryDashesOverTime()
     {
-        Debug.Log(myCurrentNumberOfDashes);
+        //Debug.Log(myCurrentNumberOfDashes);
         if (myCurrentNumberOfDashes >= MAX_NUMBER_OF_DASHES) {
             return;
             //Early Exit: Nothing to recover
@@ -190,8 +192,12 @@ public class PlayerBehaviour_1 : MonoBehaviour {
             if (mb is ISpeedInhibitor)
             {
                 ISpeedInhibitor breakable = (ISpeedInhibitor)mb;
-                mySpeedInhibitor = breakable;
-                this.myRigidBody.drag = (1 / mySpeedInhibitor.SlowFactor) * NORMAL_DRAG;
+                if (!mySpeedInhibitors.Contains(breakable)) {
+                    mySpeedInhibitors.Add(breakable);
+                    Debug.Log(mySpeedInhibitors.Count);
+                    //TODO: Find the minimum SlowFactor and apply it to the drag
+                    this.myRigidBody.drag = (1 / mySpeedInhibitors.FirstOrDefault().SlowFactor) * NORMAL_DRAG;
+                }
             }
         }
 
@@ -209,14 +215,16 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D other)
     {
         Debug.Log("Exit Collider");
-        if (mySpeedInhibitor != null) {
+        if (mySpeedInhibitors.Count > 0) {
             MonoBehaviour[] list = other.gameObject.GetComponents<MonoBehaviour>();
             foreach (MonoBehaviour mb in list)
             {
                 if (mb is ISpeedInhibitor)
                 {
-                    mySpeedInhibitor = null;
-                    this.myRigidBody.drag =  NORMAL_DRAG;
+                    mySpeedInhibitors.Remove((ISpeedInhibitor)mb);
+                    if (mySpeedInhibitors.Count == 0) {
+                        this.myRigidBody.drag = NORMAL_DRAG;
+                    }
                 }
             }
         }

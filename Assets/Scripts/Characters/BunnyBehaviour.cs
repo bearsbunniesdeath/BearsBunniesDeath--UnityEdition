@@ -56,7 +56,6 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
                 }
 
                 if (IsAlive) {
-                    this.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
                     Start();
                     //Allowing touching stuff now
                     this.GetComponent<Collider2D>().enabled = true;

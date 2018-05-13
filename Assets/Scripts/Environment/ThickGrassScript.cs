@@ -62,9 +62,6 @@ namespace Assets.Scripts.Environment
         private void TakeDamage(float dmg) {
             //Debug.Log("Grass: Taking damage: " + dmg);
             myHealth -= dmg;
-            if (myHealth < 0f) {
-                Destroy(gameObject);
-            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -75,6 +72,10 @@ namespace Assets.Scripts.Environment
         private void OnTriggerExit2D(Collider2D other)
         {
             myDamagingRigidBody = null;
+            if (myHealth < 0f)
+            {
+                Destroy(gameObject);
+            }
         }
 
     }
