@@ -7,22 +7,27 @@ using System;
 
 public class HUDScript : MonoBehaviour
 {
-
+    private PlayerBehaviour_1 myPlayer;
+    private ItemManagerScript myPlayerItemManager;
     private Text myBigText;
-    //private Text myLittleText;
+
     private Image[] ItemImageStack;
-    private Image myStaminaBar;
-    private Image mySecondWindBar;
+    private Image[] DashImageStack;
+
+    private const string DEAD_PLAYER_STRING = "DEAD.";
 
     //Need to set these in Unity
     public Sprite TorchSprite;
     public Sprite TrapSprite;
     public Sprite BunnySprite;
     public Sprite BombSprite;
+    public Sprite DashSprite;
 
     // Use this for initialization
     void Start()
     {
+        myPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour_1>();
+        myPlayerItemManager = myPlayer.gameObject.GetComponentInChildren<ItemManagerScript>();
 
         //Find my children controls!
         if (GameObject.Find("BigText") != null)
@@ -31,10 +36,6 @@ public class HUDScript : MonoBehaviour
             myBigText.rectTransform.localScale = new Vector3(4, 1, 1);
             myBigText.text = "";
         }
-        //if (GameObject.Find("LittleText") != null)
-        //{
-        //    myLittleText = GameObject.Find("LittleText").GetComponent<Text>();
-        //}
         ItemImageStack = new Image[4];
 
         for (int i = 0; i < ItemImageStack.Length; i++)
@@ -46,26 +47,62 @@ public class HUDScript : MonoBehaviour
             }
         }
 
+        DashImageStack = new Image[4];
+
+        for (int i = 0; i < DashImageStack.Length; i++)
+        {
+            string objName = "Dash" + i + "Image";
+            if (GameObject.Find(objName) != null)
+            {
+                DashImageStack[i] = GameObject.Find(objName).GetComponent<Image>();
+            }
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        UpdateItemHUD();
+        UpdatePlayerState();
+    }
+
+    private void UpdatePlayerState()
+    {
+        //TODO: Dead?? For additional lives
+        if (myPlayer.IsDead && myBigText.text != DEAD_PLAYER_STRING) {
+            myBigText.text = DEAD_PLAYER_STRING;
+        } else if (!myPlayer.IsDead && myBigText.text != "") {
+            myBigText.text = "";
+        }
+
+        //Number of Dashes Available:
+        //For now assume we will only have a max of 4 dashes
+        for (int i = 0; i < 4; i++) {
+            if (myPlayer.AvailableNumberOfDashes > i)
+            {
+                DashImageStack[i].color = Color.white;
+                DashImageStack[i].sprite = DashSprite;
+
+            }
+            else {
+                DashImageStack[i].color = Color.clear;
+                DashImageStack[i].sprite = null;
+            }
+        }
+
 
     }
 
-    /// <summary>
-    /// Put in the fraction of currentStamina / MAX Stamina
-    /// </summary>
-    /// <param name="fraction"></param>
-    public void SetStaminaBar(float fraction)
+    private void UpdateItemHUD()
     {
-        myStaminaBar.rectTransform.localScale = new Vector3(fraction, 1, 1);
-    }
+        List<eHUDItemType> itemTypeList = new List<eHUDItemType>();
+        foreach (IHoldableObject currItem in myPlayerItemManager.HeldObjects)
+        {
+            itemTypeList.Add(HUDScript.GetHUDTypeFromIHoldable(currItem));
+        }
 
-    public void SetSecondWindBar(float fraction)
-    {
-        mySecondWindBar.rectTransform.localScale = new Vector3(fraction, 1, 1);
+        SetItemStack(itemTypeList);
     }
 
     public void SetItemStack(List<eHUDItemType> itemTypeList)

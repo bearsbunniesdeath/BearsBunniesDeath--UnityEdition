@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Environment;
+﻿using Assets.Scripts;
+using Assets.Scripts.Environment;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,8 +27,8 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private  List<ISpeedInhibitor> mySpeedInhibitors;
-    private const float NORMAL_DRAG = 6f;
-    private const float SPEED_TO_FORCE = 10.0f;
+    private const float NORMAL_DRAG = 8f;
+    private const float SPEED_TO_FORCE = 12.0f;
     private const float MAX_SPEED = 4.0f;
     private const float DASH_FORCE = 1000;
 
@@ -44,6 +45,13 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private float myCurrentDashResetTimer = DASH_RESET_TIME;
     private const int MAX_NUMBER_OF_DASHES = 4;
     private int myCurrentNumberOfDashes = MAX_NUMBER_OF_DASHES;
+
+    public int AvailableNumberOfDashes
+    {
+    get {
+            return myCurrentNumberOfDashes;
+        }
+    }
 
     private const float JOYSTICK_THRESHOLD = 0.1f;
 
@@ -78,6 +86,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         {
             myRigidBody.freezeRotation = true;
         }
+        myCurrentNumberOfDashes = MAX_NUMBER_OF_DASHES;
     }
 
     /// <summary>

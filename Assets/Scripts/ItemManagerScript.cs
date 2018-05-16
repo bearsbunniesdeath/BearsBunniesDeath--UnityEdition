@@ -9,9 +9,17 @@ public class ItemManagerScript : MonoBehaviour {
     private List<IHoldableObject> myHeldObjects;
     private const int STARTING_CAPACITY = 4;
     public int Capacity = STARTING_CAPACITY;
+ 
+    public List<IHoldableObject> HeldObjects
+    {
+        get
+        {
+            return myHeldObjects;
+        }
+    }
 
-    // Use this for initialization
-    void Start () {
+// Use this for initialization
+void Start () {
         myHeldObjects = new List<IHoldableObject>();
     }
 	
@@ -56,6 +64,7 @@ public class ItemManagerScript : MonoBehaviour {
             holdable.MakePickUpNoise();
                 holdable.ObjectTransform.parent = this.gameObject.transform;
                 holdable.ObjectTransform.localPosition = Vector3.zero;
+                holdable.ObjectTransform.GetComponent<Renderer>().enabled = false;
                 holdable.IsHeld = true;
                 myHeldObjects.Add(holdable);
             }
@@ -70,6 +79,7 @@ public class ItemManagerScript : MonoBehaviour {
             myHeldObjects.Remove(removeMe);
             removeMe.ObjectTransform.parent = null;
             removeMe.ObjectTransform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            removeMe.ObjectTransform.GetComponent<Renderer>().enabled = true;
             removeMe.IsHeld = false;
         }
     }

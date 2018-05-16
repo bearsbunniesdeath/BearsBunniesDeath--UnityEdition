@@ -172,8 +172,8 @@ namespace Completed
 
         private void UpdateHUD()
         {
-            myHUD.SetStaminaBar(myStamina / (float)MAX_PLAYER_STAMINA);
-            myHUD.SetSecondWindBar(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0));
+            //myHUD.SetStaminaBar(myStamina / (float)MAX_PLAYER_STAMINA);
+            //myHUD.SetSecondWindBar(Math.Max(mySecondWindCount / MAX_SECOND_WIND_COUNT, 0));
             UpdateItemHUD();
         }
 

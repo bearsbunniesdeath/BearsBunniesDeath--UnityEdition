@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    interface IHoldableObject
+    public interface IHoldableObject
     {
          Transform ObjectTransform {
             get;
