@@ -21,8 +21,11 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public bool IsInvincible = false;
     public bool IsDead = false;
 
+    public AudioClip DashNoise;
+
     //My components and child
     private Rigidbody2D myRigidBody;
+    private AudioSource myAudioSource;
     private ItemManagerScript myItemManager;
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
@@ -60,6 +63,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         myRigidBody = GetComponent<Rigidbody2D>();
         myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
         mySpeedInhibitors = new List<ISpeedInhibitor>();
+        myAudioSource = transform.GetComponent<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -108,6 +112,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     Debug.Log("Start Dash.");
                     //Turn on ground level jump collider so we can "jump" over short objects
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
+                    SoundEffectHelper.MakeNoise(myAudioSource, DashNoise);
                     myRigidBody.AddForce(direction.normalized * DASH_FORCE);
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;

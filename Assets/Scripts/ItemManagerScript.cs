@@ -65,6 +65,8 @@ void Start () {
                 holdable.ObjectTransform.parent = this.gameObject.transform;
                 holdable.ObjectTransform.localPosition = Vector3.zero;
                 holdable.ObjectTransform.GetComponent<Renderer>().enabled = false;
+                foreach (Renderer r in holdable.ObjectTransform.GetComponentsInChildren<Renderer>())
+                    r.enabled = false;
                 holdable.IsHeld = true;
                 myHeldObjects.Add(holdable);
             }
@@ -80,6 +82,8 @@ void Start () {
             removeMe.ObjectTransform.parent = null;
             removeMe.ObjectTransform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             removeMe.ObjectTransform.GetComponent<Renderer>().enabled = true;
+            foreach (Renderer r in removeMe.ObjectTransform.GetComponentsInChildren<Renderer>())
+                r.enabled = true;
             removeMe.IsHeld = false;
         }
     }
