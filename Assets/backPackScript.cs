@@ -3,8 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets.Scripts;
 
 public class backPackScript : MonoBehaviour, IWearableItem{
+
+    public AudioClip PickUpSound;
+
     public float Magnitude
     {
         get
@@ -29,6 +33,6 @@ public class backPackScript : MonoBehaviour, IWearableItem{
 
     public void MakePickUpNoise()
     {
-
+        AudioSource.PlayClipAtPoint(PickUpSound, transform.position);
     }
 }

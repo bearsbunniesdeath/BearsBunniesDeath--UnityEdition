@@ -282,14 +282,14 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     else if (wearableItem.TypeOfItem == eWearableItemType.lives)
                     {
                         myAdditionalLives += (int)wearableItem.Magnitude;
-                        wearableItem.Worn = true;
                         Debug.Log("ADD LIVES:" + myAdditionalLives);
                     }
                     else if (wearableItem.TypeOfItem == eWearableItemType.capacity)
                     {
-                        myItemManager.Capacity += (int)wearableItem.Magnitude;
+                        myItemManager.AttemptToAddCapacity((int)wearableItem.Magnitude);
                     }
                     //Get rid the of object, so you can't keep picking it up!
+                    wearableItem.Worn = true;
                     Destroy(other.gameObject);
                 }
             }

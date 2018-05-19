@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class ItemManagerScript : MonoBehaviour {
     private const int STARTING_CAPACITY = 4;
-    public int Capacity = STARTING_CAPACITY;
+    private const int MAX_CAPACITY = 6;
+    private int myCapacity = STARTING_CAPACITY;
 
     public List<IHoldableObject> HeldObjects { get; private set; }
 
@@ -46,7 +47,7 @@ public class ItemManagerScript : MonoBehaviour {
     private void AttemptToPickUpItem(IHoldableObject holdable)
     {
         //Logic to see what I can hold
-        if (HeldObjects.Contains(holdable) || HeldObjects.Count >= Capacity) { return; }
+        if (HeldObjects.Contains(holdable) || HeldObjects.Count >= myCapacity) { return; }
 
         //As of now, the rule is one of each type
         if (!(HeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) && holdable.TypeOfItem == eItemType.torch) && holdable.IsHoldableInCurrentState)
@@ -87,6 +88,12 @@ public class ItemManagerScript : MonoBehaviour {
         {
             GameObject.Destroy(child.gameObject);
         }
+    }
+
+    internal void AttemptToAddCapacity(int magnitude)
+    {
+        myCapacity = Math.Min(myCapacity + magnitude, MAX_CAPACITY);
+        Debug.Log("Total Capacity:" + myCapacity);
     }
 }
 

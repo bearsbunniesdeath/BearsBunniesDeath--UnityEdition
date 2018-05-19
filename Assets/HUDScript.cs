@@ -37,7 +37,7 @@ public class HUDScript : MonoBehaviour
             myBigText.rectTransform.localScale = new Vector3(4, 1, 1);
             myBigText.text = "";
         }
-        ItemImageStack = new Image[4];
+        ItemImageStack = new Image[6];
 
         for (int i = 0; i < ItemImageStack.Length; i++)
         {
