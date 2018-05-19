@@ -21,6 +21,12 @@ public class backPackScript : MonoBehaviour, IWearableItem{
         }
     }
 
+    public bool Worn
+    {
+        get;
+        set;
+    }
+
     public void MakePickUpNoise()
     {
 

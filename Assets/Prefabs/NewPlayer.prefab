@@ -401,6 +401,7 @@ MonoBehaviour:
   IsInvincible: 0
   IsDead: 0
   DashNoise: {fileID: 8300000, guid: 93b08b78c39e06147aeae3192d5c7bbc, type: 3}
+  ReviveNoise: {fileID: 8300000, guid: d1b38f466e3965641992a2122981c69b, type: 3}
 --- !u!114 &114497558209896470
 MonoBehaviour:
   m_ObjectHideFlags: 1

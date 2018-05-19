@@ -25,6 +25,11 @@ namespace Assets.Scripts.Items
             get;
         }
 
+        bool Worn
+        {
+            get;set;
+        }
+
         void MakePickUpNoise();
     }
 }

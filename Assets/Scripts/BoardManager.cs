@@ -86,7 +86,6 @@ public class BoardManager : MonoBehaviour {
             probablyABear.transform.position = new Vector3(Random.Range(0, myMap.Cols), Random.Range(0, myMap.Rows), 0);
         }
 
-        ClearDeadSign();
     }
 
 
@@ -98,11 +97,6 @@ public class BoardManager : MonoBehaviour {
         children.ForEach(child => Destroy(child));
         MapInventory.AliveBunnyTransforms.Clear();
 
-        ClearDeadSign();
-    }
-
-    public void ClearDeadSign() {
-        myHUD.SetBigText("");
     }
 
 }

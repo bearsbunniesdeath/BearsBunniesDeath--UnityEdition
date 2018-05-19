@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts;
 using Assets.Scripts.Environment;
+using Assets.Scripts.Items;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public bool IsDead = false;
 
     public AudioClip DashNoise;
+    public AudioClip ReviveNoise;
 
     //My components and child
     private Rigidbody2D myRigidBody;
@@ -30,10 +32,10 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private  List<ISpeedInhibitor> mySpeedInhibitors;
-    private const float NORMAL_DRAG = 8f;
+    private const float NORMAL_DRAG = 8.5f;
     private const float SPEED_TO_FORCE = 12.0f;
     private const float MAX_SPEED = 4.0f;
-    private const float DASH_FORCE = 1000;
+    private const float DASH_FORCE = 12.5f;
 
     private const float NORMAL_SPEED = 4.0f;
     private const float DASH_SPEED = 16.0f;
@@ -49,6 +51,13 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private const int MAX_NUMBER_OF_DASHES = 4;
     private int myCurrentNumberOfDashes = MAX_NUMBER_OF_DASHES;
 
+    private int myAdditionalLives = 0;
+    private Timer myRevivalTimer;
+    private const float REVIVAL_TIME = 2.5f;
+    public bool IsReviving {
+        get { return myRevivalTimer.IsRunning; }
+    }
+
     public int AvailableNumberOfDashes
     {
     get {
@@ -60,6 +69,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        myRevivalTimer = gameObject.AddComponent<Timer>();
+        myRevivalTimer.ResetTime = REVIVAL_TIME;
+
         myRigidBody = GetComponent<Rigidbody2D>();
         myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
         mySpeedInhibitors = new List<ISpeedInhibitor>();
@@ -68,13 +80,30 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!IsDead) {
+        if (!IsDead)
+        {
             UpdateMovementFromInput();
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown("joystick button 0"))
             {
                 myItemManager.AttemptPopStack();
             }
         }
+        else
+        {
+            if (myRevivalTimer.CheckForDone())
+            {
+                Revive();
+            }
+            else if (myAdditionalLives > 0 && !myRevivalTimer.IsRunning)
+            {
+                //Start Reviving!
+                myRevivalTimer.StartTimer();
+                myAdditionalLives -= 1;
+                Debug.Log("Start Reviving!");
+            }
+
+        }
+        
     }
 
     internal void Reset()
@@ -113,7 +142,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     //Turn on ground level jump collider so we can "jump" over short objects
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
                     SoundEffectHelper.MakeNoise(myAudioSource, DashNoise);
-                    myRigidBody.AddForce(direction.normalized * DASH_FORCE);
+                    myRigidBody.AddForce(direction.normalized * DASH_FORCE, ForceMode2D.Impulse);
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
                     break;
@@ -122,7 +151,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 float speed = NORMAL_SPEED;
 
                 if (myRigidBody.velocity.magnitude < MAX_SPEED) {
-                    myRigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE);
+                    myRigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE) ;
                 }
 
                 break;
@@ -135,12 +164,6 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(true);
                     break;
                 }
-
-                if (myRigidBody.velocity.magnitude < MAX_SPEED)
-                {
-      
-                }
-
                 break;
 
             case PlayerMovementState.eDashCooldown:
@@ -158,7 +181,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 break;
         }
 
-
+        //Debug.Log(myRigidBody.velocity.magnitude);
     }
 
     private void RecoveryDashesOverTime()
@@ -212,6 +235,24 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         return movementDirection;
     }
 
+    private void Revive()
+    {
+        Debug.Log("REVIVAL!");
+
+        explosionHelper.Explode(ReviveNoise, myAudioSource, gameObject, 1500f, 5);
+
+        //Revival Explosion
+        IsDead = false;
+        transform.rotation = new Quaternion(0, 0, 0, 0);
+        GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        GetComponent<Rigidbody2D>().angularVelocity = 0;
+        if (myRigidBody != null)
+        {
+            myRigidBody.freezeRotation = true;
+        }
+        myAdditionalLives -= 1;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         //TODO: 1: Put this in a helper.
@@ -220,14 +261,39 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         {
             if (mb is ISpeedInhibitor)
             {
-                ISpeedInhibitor breakable = (ISpeedInhibitor)mb;
-                if (!mySpeedInhibitors.Contains(breakable)) {
-                    mySpeedInhibitors.Add(breakable);
+                ISpeedInhibitor speedInhib = (ISpeedInhibitor)mb;
+                if (!mySpeedInhibitors.Contains(speedInhib)) {
+                    mySpeedInhibitors.Add(speedInhib);
                     Debug.Log(mySpeedInhibitors.Count);
                     //TODO: Find the minimum SlowFactor and apply it to the drag
                     this.myRigidBody.drag = (1 / mySpeedInhibitors.FirstOrDefault().SlowFactor) * NORMAL_DRAG;
                 }
             }
+
+            if (mb is IWearableItem) {
+                IWearableItem wearableItem = (IWearableItem)mb;
+                if (!wearableItem.Worn) {
+                    wearableItem.MakePickUpNoise();
+                    if (wearableItem.TypeOfItem == eWearableItemType.speed)
+                    {
+                        //TODO: 
+                        //myAdditionalSpeed += wearableItem.Magnitude;
+                    }
+                    else if (wearableItem.TypeOfItem == eWearableItemType.lives)
+                    {
+                        myAdditionalLives += (int)wearableItem.Magnitude;
+                        wearableItem.Worn = true;
+                        Debug.Log("ADD LIVES:" + myAdditionalLives);
+                    }
+                    else if (wearableItem.TypeOfItem == eWearableItemType.capacity)
+                    {
+                        myItemManager.Capacity += (int)wearableItem.Magnitude;
+                    }
+                    //Get rid the of object, so you can't keep picking it up!
+                    Destroy(other.gameObject);
+                }
+            }
+
         }
 
         //Check if the tag of the trigger collided with is Exit.
@@ -243,7 +309,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log("Exit Collider");
+        //Debug.Log("Exit Collider");
         if (mySpeedInhibitors.Count > 0) {
             MonoBehaviour[] list = other.gameObject.GetComponents<MonoBehaviour>();
             foreach (MonoBehaviour mb in list)

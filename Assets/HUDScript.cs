@@ -15,6 +15,7 @@ public class HUDScript : MonoBehaviour
     private Image[] DashImageStack;
 
     private const string DEAD_PLAYER_STRING = "DEAD.";
+    private const string NOT_YET_DEAD_PLAYER_STRING = "dead..?";
 
     //Need to set these in Unity
     public Sprite TorchSprite;
@@ -69,11 +70,17 @@ public class HUDScript : MonoBehaviour
 
     private void UpdatePlayerState()
     {
-        //TODO: Dead?? For additional lives
-        if (myPlayer.IsDead && myBigText.text != DEAD_PLAYER_STRING) {
-            myBigText.text = DEAD_PLAYER_STRING;
-        } else if (!myPlayer.IsDead && myBigText.text != "") {
-            myBigText.text = "";
+        if (myPlayer.IsDead)
+        {
+            if (myPlayer.IsReviving) {
+                SetBigText(NOT_YET_DEAD_PLAYER_STRING);
+            }
+            else {
+                SetBigText(DEAD_PLAYER_STRING);
+            } 
+        }
+         else if (!myPlayer.IsDead ) {
+            SetBigText("");
         }
 
         //Number of Dashes Available:
@@ -92,6 +99,12 @@ public class HUDScript : MonoBehaviour
         }
 
 
+    }
+
+    private void SetBigText(String newText) {
+        if (myBigText.text != newText) {
+            myBigText.text = newText;
+        }
     }
 
     private void UpdateItemHUD()
@@ -153,11 +166,6 @@ public class HUDScript : MonoBehaviour
         {
             ItemImageStack[lastItemIndex].rectTransform.localScale = new Vector3(1.5f, 1.5f, 1);
         }
-    }
-
-    public void SetBigText(string textStr)
-    {
-        myBigText.text = textStr;
     }
 
     internal static eHUDItemType GetHUDTypeFromIHoldable(IHoldableObject item)

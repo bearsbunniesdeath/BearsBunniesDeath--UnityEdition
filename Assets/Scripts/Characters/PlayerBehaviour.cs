@@ -225,7 +225,6 @@ namespace Completed
                 rb2D.freezeRotation = true;
             }
             myAdditionalLives -= 1;
-            myHUD.SetBigText("");
         }
 
         private void AliveUpdate() {
@@ -538,12 +537,6 @@ namespace Completed
 
             //Unfreeze rotation for comedic effect
             rb2D.freezeRotation = false;
-
-                myHUD.SetBigText("DEAD.");
-                if (myAdditionalLives > 0) {
-                    myHUD.SetBigText("dead?");
-                }
-            
         }
 
         private void OnTriggerExit2D(Collider2D other)

@@ -27,6 +27,12 @@ namespace Assets.Scripts.Items
             }
         }
 
+        public bool Worn
+        {
+            get;
+            set;
+        }
+
         public void MakePickUpNoise()
         {
             //Need to use a the static audio source, because this is gonna die now!

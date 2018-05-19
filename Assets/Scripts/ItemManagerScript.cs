@@ -5,22 +5,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemManagerScript : MonoBehaviour {
-
-    private List<IHoldableObject> myHeldObjects;
     private const int STARTING_CAPACITY = 4;
     public int Capacity = STARTING_CAPACITY;
- 
-    public List<IHoldableObject> HeldObjects
-    {
-        get
-        {
-            return myHeldObjects;
-        }
-    }
 
-// Use this for initialization
-void Start () {
-        myHeldObjects = new List<IHoldableObject>();
+    public List<IHoldableObject> HeldObjects { get; private set; }
+
+    // Use this for initialization
+    void Start () {
+        HeldObjects = new List<IHoldableObject>();
     }
 	
 	// Update is called once per frame
@@ -28,7 +20,7 @@ void Start () {
     }
 
     private void LateUpdate(){
-        foreach (IHoldableObject obj in myHeldObjects){
+        foreach (IHoldableObject obj in HeldObjects){
             obj.ObjectTransform.localPosition = Vector3.zero;
         }
 
@@ -54,10 +46,10 @@ void Start () {
     private void AttemptToPickUpItem(IHoldableObject holdable)
     {
         //Logic to see what I can hold
-        if (myHeldObjects.Contains(holdable) || myHeldObjects.Count >= Capacity) { return; }
+        if (HeldObjects.Contains(holdable) || HeldObjects.Count >= Capacity) { return; }
 
         //As of now, the rule is one of each type
-        if (!(myHeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) && holdable.TypeOfItem == eItemType.torch) && holdable.IsHoldableInCurrentState)
+        if (!(HeldObjects.Exists(o => o.TypeOfItem == eItemType.torch) && holdable.TypeOfItem == eItemType.torch) && holdable.IsHoldableInCurrentState)
         {
             if (!holdable.IsHeld)
             {
@@ -68,7 +60,7 @@ void Start () {
                 foreach (Renderer r in holdable.ObjectTransform.GetComponentsInChildren<Renderer>())
                     r.enabled = false;
                 holdable.IsHeld = true;
-                myHeldObjects.Add(holdable);
+                HeldObjects.Add(holdable);
             }
         }
 
@@ -76,9 +68,9 @@ void Start () {
 
     internal void AttemptPopStack()
     {
-        if (myHeldObjects.Count > 0) {
-            IHoldableObject removeMe = myHeldObjects[myHeldObjects.Count - 1];
-            myHeldObjects.Remove(removeMe);
+        if (HeldObjects.Count > 0) {
+            IHoldableObject removeMe = HeldObjects[HeldObjects.Count - 1];
+            HeldObjects.Remove(removeMe);
             removeMe.ObjectTransform.parent = null;
             removeMe.ObjectTransform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             removeMe.ObjectTransform.GetComponent<Renderer>().enabled = true;
@@ -90,7 +82,11 @@ void Start () {
 
     internal void Clear()
     {
-        myHeldObjects.Clear();
+        HeldObjects.Clear();
+        foreach (Transform child in transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
     }
 }
 
