@@ -33,7 +33,7 @@ public class PlayerLightScript : MonoBehaviour {
             myPlayerBody = pScript.RigidBody;
         }
 
-        Debug.Log("Dimmer Count: " + myCurrentDimmers.Count);
+        //Debug.Log("Dimmer Count: " + myCurrentDimmers.Count);
         if (myCurrentDimmers.Count == 0) {
             //Now we adjust based on player speed
             float lightScale =  Mathf.Max(0, (HIGHEST_VELOCITY - myPlayerBody.velocity.magnitude)) / HIGHEST_VELOCITY;

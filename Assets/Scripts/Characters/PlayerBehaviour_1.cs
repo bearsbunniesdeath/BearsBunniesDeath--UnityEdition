@@ -36,7 +36,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private const float NORMAL_DRAG = 8.5f;
     private const float SPEED_TO_FORCE = 12.0f;
     private const float MAX_SPEED = 4.0f;
-    private const float DASH_FORCE = 12.5f;
+    private const float DASH_FORCE = 22f;
 
     private const float NORMAL_SPEED = 4.0f;
     private const float DASH_SPEED = 16.0f;

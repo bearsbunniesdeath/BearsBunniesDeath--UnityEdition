@@ -73,6 +73,7 @@ MonoBehaviour:
   terrainObjects:
   - {fileID: 1000010791955108, guid: da5d2385f03e99c48884f9e06474a3de, type: 2}
   - {fileID: 1000012581114124, guid: 12fc8bbe3cc5d3f4a8ff3ff0197a6114, type: 2}
+  - {fileID: 1070568550713120, guid: 5544c7c426df42f458ee1b86ceb436ad, type: 2}
   thickGrass: {fileID: 1886263398954348, guid: 00884a086ece3fc4997dd7aa132649d2, type: 2}
   berryBush: {fileID: 1845193541626116, guid: 61aa3234d7c2d7c46831480654f9989b, type: 2}
   StartObject: {fileID: 1000011701091022, guid: 6f220a35aed49ed4aa26c3a50d9e1d02,

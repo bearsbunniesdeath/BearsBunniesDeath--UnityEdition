@@ -120,7 +120,7 @@ public class BearBehaviour : NPCBehaviour {
 
     private void ChargeTowardPlayer()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, myChargeDirection, 1.25f, 1 << LayerMask.NameToLayer("Obstacles"));
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, myChargeDirection, 1.25f, 1 << LayerMask.NameToLayer("Obstacles") | 1 << LayerMask.NameToLayer("Jumpable"));
         if (hit.collider != null)
         {
             UpdateBehaviour(BehaviourType.eIdle);
