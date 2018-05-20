@@ -293,7 +293,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010235718420}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 51.950233, y: 33.017002, z: 0}
+  m_LocalPosition: {x: 6.5078363, y: -3.3764899, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4958582413912640}
@@ -595,6 +595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsOpen: 0
+  JailBreakSound: {fileID: 8300000, guid: d58de96b47105014890cf68fc03de3dc, type: 3}
 --- !u!212 &212000010121453984
 SpriteRenderer:
   m_ObjectHideFlags: 1

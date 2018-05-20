@@ -8,6 +8,9 @@ namespace Assets.Scripts.Environment
 {
     class ThickGrassScript : MonoBehaviour, ILightInhibitor, ISpeedInhibitor
     {
+
+        public AudioClip WalkingThroughGrassSound;
+        private AudioSource myAudioSource;
         float myHealth;
         /// <summary>
         /// A rigid body from a moving object that damages the grass based on it's speed
@@ -39,20 +42,39 @@ namespace Assets.Scripts.Environment
         }
 
         void Update(){
-            if (myDamagingRigidBody != null) {
-                //TakeDamage(myDamagingRigidBody.velocity.magnitude * Time.deltaTime);
-            }
         }
 
         void FixedUpdate() {
             if (myDamagingRigidBody != null)
             {
-                TakeDamage(myDamagingRigidBody.velocity.magnitude * Time.deltaTime);
+                //Debug.Log(myDamagingRigidBody.velocity.magnitude);
+                if (myDamagingRigidBody.velocity.magnitude > 0.4f)
+                {
+                    if (!myAudioSource.isPlaying)
+                    {
+                        float randomStartingTime = UnityEngine.Random.Range(0f, WalkingThroughGrassSound.length);
+                        myAudioSource.time = randomStartingTime;
+                        myAudioSource.Play();
+                    }
+                    TakeDamage(myDamagingRigidBody.velocity.magnitude * Time.deltaTime);
+                }
+                else if (myAudioSource.isPlaying) {
+                    myAudioSource.Stop();
+                }
+                    
+            }
+            else {
+                if (myAudioSource.isPlaying)
+                {
+                    myAudioSource.Stop();
+                }
             }
         }
 
         void Start()
         {
+            myAudioSource = GetComponent<AudioSource>();
+
             DimmingTime = 0.5f;
             myHealth = MAX_HEALTH;
             SlowingFactor = SLOWING_FACTOR;
@@ -66,7 +88,9 @@ namespace Assets.Scripts.Environment
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            myDamagingRigidBody = other.attachedRigidbody;
+            //if (other.gameObject.tag == "Player") {
+                myDamagingRigidBody = other.attachedRigidbody;
+            //}
         }
 
         private void OnTriggerExit2D(Collider2D other)

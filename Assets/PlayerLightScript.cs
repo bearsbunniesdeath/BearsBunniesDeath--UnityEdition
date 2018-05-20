@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Environment;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -88,4 +89,8 @@ public class PlayerLightScript : MonoBehaviour {
         }
     }
 
+    internal void Reset()
+    {
+        myCurrentDimmers.Clear();
+    }
 }

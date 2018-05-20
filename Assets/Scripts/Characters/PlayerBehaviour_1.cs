@@ -29,6 +29,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public Rigidbody2D RigidBody;
     private AudioSource myAudioSource;
     private ItemManagerScript myItemManager;
+    private PlayerLightScript myLightScript;
 
     private PlayerMovementState myState = PlayerMovementState.eNormal;
     private  List<ISpeedInhibitor> mySpeedInhibitors;
@@ -77,6 +78,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
         RigidBody = GetComponent<Rigidbody2D>();
         myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
+        myLightScript = this.transform.Find("Point light").GetComponent<PlayerLightScript>();
         mySpeedInhibitors = new List<ISpeedInhibitor>();
         myAudioSource = transform.GetComponent<AudioSource>();
     }
@@ -114,6 +116,10 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         transform.rotation = new Quaternion(0, 0, 0, 0);
         if (myItemManager != null) {
             myItemManager.Reset();
+        }
+        if (myLightScript != null)
+        {
+            myLightScript.Reset();
         }
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0;

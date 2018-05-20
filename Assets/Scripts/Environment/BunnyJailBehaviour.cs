@@ -4,6 +4,7 @@ using System.Collections;
 public class BunnyJailBehaviour : MonoBehaviour {
 
     public bool IsOpen = false;
+    public AudioClip JailBreakSound;
 
     // Use this for initialization
     void Start () {
@@ -19,6 +20,8 @@ public class BunnyJailBehaviour : MonoBehaviour {
     {
         if (collision.tag == "Player" && !IsOpen)
         {
+
+            AudioSource.PlayClipAtPoint(JailBreakSound, this.transform.position);
 
             //Player touched the switch! FREEEDOM!
             Transform doorTrans1 = transform.Find("DoorRock1");
