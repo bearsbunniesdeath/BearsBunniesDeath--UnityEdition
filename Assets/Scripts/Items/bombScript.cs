@@ -149,7 +149,7 @@ public class bombScript : MonoBehaviour, IHoldableObject {
 
         myLight.intensity = 1.0f;
 
-        explosionHelper.Explode(ExplosionSound, myAudioSource, gameObject, ForceMagnitude, 1);
+        explosionHelper.Explode(ExplosionSound, gameObject, ForceMagnitude, 1);
         this.GetComponent<SpriteRenderer>().sprite = null;
         myDestroyMeTimer = DESTROY_ME_TIME;
         IsSet = false;

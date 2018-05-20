@@ -10,6 +10,7 @@ public class HUDScript : MonoBehaviour
     private PlayerBehaviour_1 myPlayer;
     private ItemManagerScript myPlayerItemManager;
     private Text myBigText;
+    private Text myRevivalCountText;
 
     private Image[] ItemImageStack;
     private Image[] SlotImageStack;
@@ -37,6 +38,12 @@ public class HUDScript : MonoBehaviour
             myBigText = GameObject.Find("BigText").GetComponent<Text>();
             myBigText.rectTransform.localScale = new Vector3(4, 1, 1);
             myBigText.text = "";
+        }
+
+        if (GameObject.Find("RevivalCount") != null)
+        {
+            myRevivalCountText = GameObject.Find("RevivalCount").GetComponent<Text>();
+            myRevivalCountText.text = 0.ToString();
         }
 
         ItemImageStack = new Image[6];
@@ -96,7 +103,15 @@ public class HUDScript : MonoBehaviour
     {
         UpdateSlotVisibility();
         UpdateItemHUD();
+        UpdateWearables();
         UpdatePlayerState();
+    }
+
+    private void UpdateWearables()
+    {
+        if (myRevivalCountText != null && myRevivalCountText.text != myPlayer.AdditionalLives.ToString()) {
+            myRevivalCountText.text = myPlayer.AdditionalLives.ToString();
+        }
     }
 
     private void UpdatePlayerState()

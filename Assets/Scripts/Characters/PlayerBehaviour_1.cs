@@ -54,6 +54,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     private int myAdditionalLives = 0;
     private Timer myRevivalTimer;
     private const float REVIVAL_TIME = 2.5f;
+    public int AdditionalLives {
+    get { return myAdditionalLives; }
+    }
     public bool IsReviving {
         get { return myRevivalTimer.IsRunning; }
     }
@@ -98,7 +101,6 @@ public class PlayerBehaviour_1 : MonoBehaviour {
             {
                 //Start Reviving!
                 myRevivalTimer.StartTimer();
-                myAdditionalLives -= 1;
                 Debug.Log("Start Reviving!");
             }
 
@@ -239,7 +241,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     {
         Debug.Log("REVIVAL!");
 
-        explosionHelper.Explode(ReviveNoise, myAudioSource, gameObject, 1500f, 5);
+        explosionHelper.Explode(ReviveNoise, gameObject, 1500f, 5);
 
         //Revival Explosion
         IsDead = false;

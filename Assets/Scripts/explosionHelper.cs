@@ -9,9 +9,9 @@ namespace Assets.Scripts
 {
     class explosionHelper
     {
-        public static void Explode(AudioClip audClip, AudioSource audSource, GameObject source, float forceMagnitude, float range) {
+        public static void Explode(AudioClip audClip, GameObject source, float forceMagnitude, float range) {
 
-            SoundEffectHelper.MakeNoise(audSource, audClip);
+            AudioSource.PlayClipAtPoint(audClip, source.transform.position);
 
             Vector2 point = new Vector2(source.transform.position.x, source.transform.position.y);
             Collider2D[] toExplode = Physics2D.OverlapCircleAll(point, range);

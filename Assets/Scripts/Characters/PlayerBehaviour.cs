@@ -213,7 +213,7 @@ namespace Completed
         {
             Debug.Log("REVIVAL!");
 
-            explosionHelper.Explode(reviveSound, myAudioSource, gameObject, 1500f, 5);
+            explosionHelper.Explode(reviveSound, gameObject, 1500f, 5);
 
             //Revival Explosion
             IsDead = false;
