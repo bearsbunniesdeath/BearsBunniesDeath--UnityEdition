@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts.Environment
 {
-    interface IPlayerLightDimmer
+    interface ILightInhibitor
     {
         float DimmingTime {
             get;

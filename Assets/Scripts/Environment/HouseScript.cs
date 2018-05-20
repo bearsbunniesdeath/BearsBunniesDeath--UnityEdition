@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HouseScript : MonoBehaviour, IPlayerLightDimmer{
+public class HouseScript : MonoBehaviour, ILightInhibitor{
 
     private Transform myRoofTransform;
     private Vector3 myOriginalRoofLocation;

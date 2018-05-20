@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Environment
 {
-    class ThickGrassScript : MonoBehaviour, IPlayerLightDimmer, ISpeedInhibitor
+    class ThickGrassScript : MonoBehaviour, ILightInhibitor, ISpeedInhibitor
     {
         float myHealth;
         /// <summary>
@@ -16,7 +16,7 @@ namespace Assets.Scripts.Environment
         float MAX_HEALTH = 1.0f;
         float SLOWING_FACTOR = 0.19f;
         public float SlowingFactor;
-        float DIMMING_FACTOR = 0.5f;
+        float DIMMING_FACTOR = 0.35f;
 
         public float DimmingTime
         {

@@ -31,7 +31,7 @@ namespace Completed
         const float REVIVAL_DELAY = 3.00f;
         private Timer myReviveDelayTimer;
 
-        private IPlayerLightDimmer myCurrentDimmingElement;
+        private ILightInhibitor myCurrentDimmingElement;
         private float myTimeInThickGrass;
 
         private int MAX_PLAYER_STAMINA = 100;
@@ -496,7 +496,7 @@ namespace Completed
             }
             else if (other.tag == "ThickGrass" || other.tag == "HouseInterior")
             {
-                myCurrentDimmingElement  = other.GetComponent<IPlayerLightDimmer>();
+                myCurrentDimmingElement  = other.GetComponent<ILightInhibitor>();
             }
             else if (other.tag == "WearableItem")
             {

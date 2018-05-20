@@ -20,6 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4270831640844688}
   - component: {fileID: 108287335278629974}
+  - component: {fileID: 58684434435923242}
+  - component: {fileID: 114021411873138152}
   m_Layer: 8
   m_Name: Point light
   m_TagString: Untagged
@@ -102,7 +104,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1165981795752080}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2205, y: 0.0084, z: 0}
+  m_LocalPosition: {x: 31.591494, y: 27.89476, z: 0}
   m_LocalScale: {x: 1.8338823, y: 1.8249675, z: 0.59486276}
   m_Children:
   - {fileID: 4270831640844688}
@@ -170,6 +172,21 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.1}
+  serializedVersion: 2
+  m_Radius: 0.05
+--- !u!58 &58684434435923242
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1048233295988684}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.09}
   serializedVersion: 2
   m_Radius: 0.05
 --- !u!60 &60482758839783332
@@ -362,8 +379,8 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
-  m_Range: 8
-  m_SpotAngle: 141.2
+  m_Range: 16
+  m_SpotAngle: 179
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -402,6 +419,19 @@ MonoBehaviour:
   IsDead: 0
   DashNoise: {fileID: 8300000, guid: 93b08b78c39e06147aeae3192d5c7bbc, type: 3}
   ReviveNoise: {fileID: 8300000, guid: d1b38f466e3965641992a2122981c69b, type: 3}
+  RigidBody: {fileID: 0}
+--- !u!114 &114021411873138152
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1048233295988684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6d32643aa3d5c4fae9864398a5b05d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mySetPoint: 0
 --- !u!114 &114497558209896470
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -413,7 +443,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7397902fa1918e348b53495e34537864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Capacity: 4
 --- !u!212 &212177844143444774
 SpriteRenderer:
   m_ObjectHideFlags: 1

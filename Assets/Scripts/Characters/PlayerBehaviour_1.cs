@@ -26,7 +26,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public AudioClip ReviveNoise;
 
     //My components and child
-    private Rigidbody2D myRigidBody;
+    public Rigidbody2D RigidBody;
     private AudioSource myAudioSource;
     private ItemManagerScript myItemManager;
 
@@ -75,7 +75,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         myRevivalTimer = gameObject.AddComponent<Timer>();
         myRevivalTimer.ResetTime = REVIVAL_TIME;
 
-        myRigidBody = GetComponent<Rigidbody2D>();
+        RigidBody = GetComponent<Rigidbody2D>();
         myItemManager = this.transform.Find(ITEM_MANAGER_STRING).GetComponent<ItemManagerScript>();
         mySpeedInhibitors = new List<ISpeedInhibitor>();
         myAudioSource = transform.GetComponent<AudioSource>();
@@ -117,9 +117,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         }
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0;
-        if (myRigidBody != null)
+        if (RigidBody != null)
         {
-            myRigidBody.freezeRotation = true;
+            RigidBody.freezeRotation = true;
         }
         myCurrentNumberOfDashes = MAX_NUMBER_OF_DASHES;
     }
@@ -144,7 +144,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     //Turn on ground level jump collider so we can "jump" over short objects
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
                     SoundEffectHelper.MakeNoise(myAudioSource, DashNoise);
-                    myRigidBody.AddForce(direction.normalized * DASH_FORCE, ForceMode2D.Impulse);
+                    RigidBody.AddForce(direction.normalized * DASH_FORCE, ForceMode2D.Impulse);
                     myCurrentNumberOfDashes -= 1;
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
                     break;
@@ -152,8 +152,8 @@ public class PlayerBehaviour_1 : MonoBehaviour {
 
                 float speed = NORMAL_SPEED;
 
-                if (myRigidBody.velocity.magnitude < MAX_SPEED) {
-                    myRigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE) ;
+                if (RigidBody.velocity.magnitude < MAX_SPEED) {
+                    RigidBody.AddForce(direction.normalized * speed * SPEED_TO_FORCE) ;
                 }
 
                 break;
@@ -175,9 +175,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     myState = PlayerMovementState.eNormal;
                     break;
                 }
-                if (myRigidBody.velocity.magnitude < MAX_SPEED)
+                if (RigidBody.velocity.magnitude < MAX_SPEED)
                 {
-                    myRigidBody.AddForce(direction.normalized * NORMAL_SPEED * 0.2f * SPEED_TO_FORCE);
+                    RigidBody.AddForce(direction.normalized * NORMAL_SPEED * 0.2f * SPEED_TO_FORCE);
                 }
 
                 break;
@@ -248,9 +248,9 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         transform.rotation = new Quaternion(0, 0, 0, 0);
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0;
-        if (myRigidBody != null)
+        if (RigidBody != null)
         {
-            myRigidBody.freezeRotation = true;
+            RigidBody.freezeRotation = true;
         }
         myAdditionalLives -= 1;
     }
@@ -268,7 +268,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     mySpeedInhibitors.Add(speedInhib);
                     Debug.Log(mySpeedInhibitors.Count);
                     //TODO: Find the minimum SlowFactor and apply it to the drag
-                    this.myRigidBody.drag = (1 / mySpeedInhibitors.FirstOrDefault().SlowFactor) * NORMAL_DRAG;
+                    this.RigidBody.drag = (1 / mySpeedInhibitors.FirstOrDefault().SlowFactor) * NORMAL_DRAG;
                 }
             }
 
@@ -320,7 +320,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                 {
                     mySpeedInhibitors.Remove((ISpeedInhibitor)mb);
                     if (mySpeedInhibitors.Count == 0) {
-                        this.myRigidBody.drag = NORMAL_DRAG;
+                        this.RigidBody.drag = NORMAL_DRAG;
                     }
                 }
             }
@@ -330,7 +330,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public void Kill()
     {
         IsDead = true;
-        myRigidBody.freezeRotation = false;
+        RigidBody.freezeRotation = false;
         //myRenderer.material.SetColor("_Color", Color.black);
     }
 
