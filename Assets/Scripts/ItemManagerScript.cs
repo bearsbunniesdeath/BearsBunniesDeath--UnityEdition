@@ -9,6 +9,14 @@ public class ItemManagerScript : MonoBehaviour {
     private const int MAX_CAPACITY = 6;
     private int myCapacity = STARTING_CAPACITY;
 
+    public int Capacity {
+        get
+        {
+            return myCapacity;
+        }
+    }
+
+
     public List<IHoldableObject> HeldObjects { get; private set; }
 
     // Use this for initialization

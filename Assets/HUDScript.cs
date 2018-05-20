@@ -12,6 +12,7 @@ public class HUDScript : MonoBehaviour
     private Text myBigText;
 
     private Image[] ItemImageStack;
+    private Image[] SlotImageStack;
     private Image[] DashImageStack;
 
     private const string DEAD_PLAYER_STRING = "DEAD.";
@@ -37,6 +38,7 @@ public class HUDScript : MonoBehaviour
             myBigText.rectTransform.localScale = new Vector3(4, 1, 1);
             myBigText.text = "";
         }
+
         ItemImageStack = new Image[6];
 
         for (int i = 0; i < ItemImageStack.Length; i++)
@@ -45,6 +47,17 @@ public class HUDScript : MonoBehaviour
             if (GameObject.Find(objName) != null)
             {
                 ItemImageStack[i] = GameObject.Find(objName).GetComponent<Image>();
+            }
+        }
+
+        SlotImageStack = new Image[6];
+
+        for (int i = 0; i < SlotImageStack.Length; i++)
+        {
+            string objName = "Slot" + i + "Image";
+            if (GameObject.Find(objName) != null)
+            {
+                SlotImageStack[i] = GameObject.Find(objName).GetComponent<Image>();
             }
         }
 
@@ -61,9 +74,27 @@ public class HUDScript : MonoBehaviour
 
     }
 
+    private void UpdateSlotVisibility()
+    {
+        //Show the correct number of fillable slots as images:
+        for (int i = 0; i < SlotImageStack.Length; i++)
+        {
+            if (i < myPlayerItemManager.Capacity)
+            {
+                SlotImageStack[i].color = Color.white;
+            }
+            else
+            {
+                SlotImageStack[i].color = Color.clear;
+            }
+
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        UpdateSlotVisibility();
         UpdateItemHUD();
         UpdatePlayerState();
     }
@@ -120,6 +151,7 @@ public class HUDScript : MonoBehaviour
 
     public void SetItemStack(List<eHUDItemType> itemTypeList)
     {
+
         int lastItemIndex = -1;
         for (int i = 0; i < ItemImageStack.Length; i++)
         {
