@@ -113,7 +113,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
         IsDead = false;
         transform.rotation = new Quaternion(0, 0, 0, 0);
         if (myItemManager != null) {
-            myItemManager.Clear();
+            myItemManager.Reset();
         }
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         GetComponent<Rigidbody2D>().angularVelocity = 0;

@@ -89,13 +89,14 @@ public class ItemManagerScript : MonoBehaviour {
         }
     }
 
-    internal void Clear()
+    internal void Reset()
     {
         HeldObjects.Clear();
         foreach (Transform child in transform)
         {
             GameObject.Destroy(child.gameObject);
         }
+        myCapacity = STARTING_CAPACITY;
     }
 
     internal void AttemptToAddCapacity(int magnitude)
