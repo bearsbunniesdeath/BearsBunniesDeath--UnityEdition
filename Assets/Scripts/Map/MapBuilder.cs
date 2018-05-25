@@ -40,7 +40,8 @@ public class MapBuilder : MonoBehaviour {
     public int columns = 64;                                        //Number of columns in our gameboard
     public GameObject[] floorTiles;                                 //Array of floor prefabs.
     public GameObject pathTile;
-    public GameObject[] terrainObjects;                             //Array of terrain objects (tree, rocks, etc)
+    public GameObject[] terrainObjects;                             //Array of terrain objects (tree, rocks, stumps, etc)
+    public GameObject[] fenceObjects;                             //Array of terrain objects that you cannot jump over (tree, rocks, etc)
     public GameObject thickGrass;
     public GameObject berryBush;
     public GameObject StartObject;                             //temp icon "S" to show the start
@@ -61,7 +62,6 @@ public class MapBuilder : MonoBehaviour {
     public GameObject backPack;
     public GameObject house;
     public GameObject[] doodads;
-    public Count countOfTerrainObjects;
     public Count numberOfBears;                                     //Number of bears to spawn on the map
     public Count numberOfBunnies;                                   //Number of bunnies to spawn on the map
     #endregion
