@@ -11,6 +11,7 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
 
     private AudioSource myAudioSource;
     public AudioClip PickUpSound;
+    public AudioClip BreakUpNoise;
 
     public bool IsInvincible;
 
@@ -52,7 +53,8 @@ public class BunnyBehaviour : NPCBehaviour, IHoldableObject
                     //Bunny Break up.
                     Mate.Mate = null; //Free myself from the other
                     Mate = null;
-                    //TODO: Sad noise. No one loves me anymore... :(
+                    //Sad noise :( Welcome to Heartbreak.
+                    SoundEffectHelper.MakeNoise(myAudioSource, BreakUpNoise);
                 }
 
                 if (IsAlive) {

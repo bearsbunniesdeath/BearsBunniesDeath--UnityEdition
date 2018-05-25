@@ -85,7 +85,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013706468624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.07774, y: 45.290096, z: 0}
+  m_LocalPosition: {x: 53.70143, y: 24.99955, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 4000010231146980}
@@ -286,6 +286,7 @@ MonoBehaviour:
   hatSprites:
   - {fileID: 0}
   PickUpSound: {fileID: 8300000, guid: c2dc449304c8c0e41954d69f168b35c8, type: 3}
+  BreakUpNoise: {fileID: 8300000, guid: 521089d8d2914904183bbcb359ef8d63, type: 3}
   IsInvincible: 0
   Mate: {fileID: 0}
   behaviour: 0

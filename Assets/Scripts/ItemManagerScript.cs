@@ -70,9 +70,34 @@ public class ItemManagerScript : MonoBehaviour {
                     r.enabled = false;
                 holdable.IsHeld = true;
                 HeldObjects.Add(holdable);
+                CheckForMateableBunnies();
             }
         }
 
+    }
+
+    private void CheckForMateableBunnies()
+    {
+        for (int i = 0; i < HeldObjects.Count - 1; i++)
+        { //Don't do the last one since we always look forward
+            IHoldableObject currItem = HeldObjects[i];
+            IHoldableObject nextItem = HeldObjects[i + 1];
+            if (currItem.TypeOfItem == eItemType.bunny && nextItem.TypeOfItem == eItemType.bunny)
+            {
+                BunnyBehaviour currBunny = (BunnyBehaviour)currItem;
+                BunnyBehaviour nextBunny = (BunnyBehaviour)nextItem;
+                if (currBunny.Gender != BunnyBehaviour.eBunnyGender.baby && nextBunny.Gender != BunnyBehaviour.eBunnyGender.baby)
+                {
+                    if (currBunny.Gender != nextBunny.Gender && currBunny.Mate == null && nextBunny.Mate == null)
+                    {
+                        Debug.Log("  ;) ");
+                        //Must go both ways, so both can check if the other's still there.
+                        currBunny.StartMating(nextBunny);
+                        nextBunny.StartMating(currBunny);
+                    }
+                }
+            }
+        }
     }
 
     internal void AttemptPopStack()
