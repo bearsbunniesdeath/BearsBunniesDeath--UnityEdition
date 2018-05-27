@@ -15,7 +15,7 @@ namespace Assets.Scripts.Environment
         /// <summary>
         /// A rigid body from a moving object that damages the grass based on it's speed
         /// </summary>
-        Rigidbody2D myDamagingRigidBody = null;
+       List< Rigidbody2D> myDamagingRigidBodies = new List<Rigidbody2D>();
         float MAX_HEALTH = 1.0f;
         float SLOWING_FACTOR = 0.19f;
         public float SlowingFactor;
@@ -45,10 +45,9 @@ namespace Assets.Scripts.Environment
         }
 
         void FixedUpdate() {
-            if (myDamagingRigidBody != null)
+            if (myDamagingRigidBodies.Count > 0)
             {
-                //Debug.Log(myDamagingRigidBody.velocity.magnitude);
-                if (myDamagingRigidBody.velocity.magnitude > 0.4f)
+                if (myDamagingRigidBodies.Exists(x => x.velocity.magnitude > 0.4f))
                 {
                     if (!myAudioSource.isPlaying)
                     {
@@ -56,7 +55,9 @@ namespace Assets.Scripts.Environment
                         myAudioSource.time = randomStartingTime;
                         myAudioSource.Play();
                     }
-                    TakeDamage(myDamagingRigidBody.velocity.magnitude * Time.deltaTime);
+                    foreach (Rigidbody2D damager in myDamagingRigidBodies.Where(x => x.velocity.magnitude > 0.4f)) {
+                        TakeDamage(damager.velocity.magnitude * Time.deltaTime);
+                    }
                 }
                 else if (myAudioSource.isPlaying) {
                     myAudioSource.Stop();
@@ -88,14 +89,36 @@ namespace Assets.Scripts.Environment
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            //if (other.gameObject.tag == "Player") {
-                myDamagingRigidBody = other.attachedRigidbody;
-            //}
+            //TODO: Put in helper.
+            //A held item should not be considered as a damagingRigidBody
+            //Should we just disable all colliders when held?
+            MonoBehaviour[] list = other.gameObject.GetComponentsInParent<MonoBehaviour>();
+            if (list.Length == 0)
+            {
+                list = other.gameObject.GetComponents<MonoBehaviour>();
+            }
+            foreach (MonoBehaviour mb in list)
+            {
+                if (mb is IHoldableObject)
+                {
+                    IHoldableObject holdable = (IHoldableObject)mb;
+                    if (holdable.IsHeld) {
+                        return;
+                    }
+                }
+            }
+
+            if (!myDamagingRigidBodies.Contains(other.attachedRigidbody)) {
+                myDamagingRigidBodies.Add(other.attachedRigidbody);
+            }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            myDamagingRigidBody = null;
+            if (myDamagingRigidBodies.Contains(other.attachedRigidbody))
+            {
+                myDamagingRigidBodies.Remove(other.attachedRigidbody);
+            }
             if (myHealth < 0f)
             {
                 Destroy(gameObject);
