@@ -45,6 +45,7 @@ namespace Assets.Scripts
     {
         bunny,
         bunnyFemale,
+        bunnyMating,
         bunnyMale,
         torch,
         trap,

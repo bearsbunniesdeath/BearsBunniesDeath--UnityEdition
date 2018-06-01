@@ -198,6 +198,10 @@ public class HUDScript : MonoBehaviour
                     {
                         ItemImageStack[i].color = Color.blue;
                     }
+                    else if (itemTypeList[i] == eHUDItemType.bunnyMating)
+                    {
+                        ItemImageStack[i].color = Color.magenta;
+                    }
                 }
                 
                 lastItemIndex = i;
