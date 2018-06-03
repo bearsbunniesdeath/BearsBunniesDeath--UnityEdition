@@ -56,8 +56,23 @@ TagManager:
   - name: FloorMat
     uniqueID: 3042318997
     locked: 0
+  - name: Path
+    uniqueID: 2407435251
+    locked: 0
+  - name: StartAndFinishMats
+    uniqueID: 2113135395
+    locked: 0
+  - name: ThickGrass
+    uniqueID: 2825221241
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 318476675
+    locked: 0
+  - name: Bear
+    uniqueID: 669492891
     locked: 0
   - name: Background
     uniqueID: 3314158581

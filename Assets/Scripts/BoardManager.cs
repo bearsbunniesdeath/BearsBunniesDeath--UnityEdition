@@ -39,6 +39,15 @@ public class BoardManager : MonoBehaviour {
             {
                 GameObject instance = Instantiate(gameObj, mapObj.Position, Quaternion.identity) as GameObject;
 
+                //Randomly Choose a Order in layer so we don't get ugly overlap
+                SpriteRenderer maybeSpriteRenderder = instance.GetComponent<SpriteRenderer>();
+                if (maybeSpriteRenderder == null) {
+                    maybeSpriteRenderder = instance.GetComponentInChildren<SpriteRenderer>();
+                }
+                if (maybeSpriteRenderder != null)
+                {
+                    maybeSpriteRenderder.sortingOrder = UnityEngine.Random.Range(0, 10000);
+                }
                 //Set the parent of our newly instantiated object instance to boardHolder, this is just organizational to avoid cluttering hierarchy.
                 instance.transform.SetParent(boardHolder);
             }

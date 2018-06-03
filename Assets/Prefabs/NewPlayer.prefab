@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 108287335278629974}
   - component: {fileID: 58684434435923242}
   - component: {fileID: 114021411873138152}
+  - component: {fileID: 114698385810098336}
   m_Layer: 8
   m_Name: Point light
   m_TagString: Untagged
@@ -104,7 +105,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1165981795752080}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.591494, y: 27.89476, z: 0}
+  m_LocalPosition: {x: -0.2205, y: 0.0084, z: 0}
   m_LocalScale: {x: 1.8338823, y: 1.8249675, z: 0.59486276}
   m_Children:
   - {fileID: 4270831640844688}
@@ -355,7 +356,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -393,7 +394,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -443,6 +444,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7397902fa1918e348b53495e34537864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114698385810098336
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1048233295988684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e6d32643aa3d5c4fae9864398a5b05d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mySetPoint: 0
 --- !u!212 &212177844143444774
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -518,10 +531,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 318476675
+  m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e9c48e06dd891654ea136ad2c735a4af, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d51966ce2bc8924c81d223db4713659, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
