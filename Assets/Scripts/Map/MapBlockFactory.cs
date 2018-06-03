@@ -117,7 +117,8 @@ namespace Assets.Scripts.Map
 
             #region //Dense area of obstacles and grass (FullDense.JSON)
             JSONLayout JSONLayout1 = new JSONLayout();
-            JSONLayout1.DensityAreas.Add(new DensityArea(0.30f, allCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.35f, allCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.10f, allCoords, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout1.DensityAreas.Add(new DensityArea(0.50f, allCoords, DensityArea.eMapItems.thickGrass));
             JSONLayout1.frequency = JSONLayout.eFrequency.eHigh;
             JSONLayout1.LayoutName = "FullDense";
@@ -140,6 +141,7 @@ namespace Assets.Scripts.Map
             JSONLayout3.DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.armedBomb));
             JSONLayout3. DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.bomb));
             JSONLayout3.DensityAreas.Add(new DensityArea(0.30f, allCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout3.DensityAreas.Add(new DensityArea(0.10f, allCoords, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout3.DensityAreas.Add(new DensityArea(0.50f, allCoords, DensityArea.eMapItems.thickGrass));
             JSONLayout3.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout3.LayoutName = "itemIsland";
@@ -149,6 +151,7 @@ namespace Assets.Scripts.Map
             #region   //Empty grassy Field
             JSONLayout JSONLayout4 = new JSONLayout();
             JSONLayout4.DensityAreas.Add(new DensityArea(0.2f, allCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout4.DensityAreas.Add(new DensityArea(0.1f, allCoords, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout4.DensityAreas.Add(new DensityArea(0.65f, allCoords, DensityArea.eMapItems.thickGrass));
             JSONLayout4.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout4.LayoutName = "EmptyGrassyField";
@@ -162,6 +165,7 @@ namespace Assets.Scripts.Map
             JSONLayout5.DensityAreas.Add(new DensityArea(0.11f, islandCoords, DensityArea.eMapItems.armedBomb));
             JSONLayout5.DensityAreas.Add(new DensityArea(0.65f, allCoords, DensityArea.eMapItems.thickGrass));
             JSONLayout5.DensityAreas.Add(new DensityArea(0.25f, allCoords, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout5.DensityAreas.Add(new DensityArea(0.10f, allCoords, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout5.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout5.LayoutName = "ItemDetour";
             NonPathJSONLayouts.Add(JSONLayout5);
@@ -250,8 +254,10 @@ namespace Assets.Scripts.Map
             List<MapPosition> topChunk1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 0), new MapPosition(4, 0));
             List<MapPosition> botChunk1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 7), new MapPosition(4, 7));
 
-            JSONLayout10.DensityAreas.Add(new DensityArea(1f, leftPillar1, DensityArea.eMapItems.terrainObstacles));
-            JSONLayout10.DensityAreas.Add(new DensityArea(1f, rightPillar1, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout10.DensityAreas.Add(new DensityArea(0.8f, leftPillar1, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout10.DensityAreas.Add(new DensityArea(1f, leftPillar1, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout10.DensityAreas.Add(new DensityArea(0.8f, rightPillar1, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout10.DensityAreas.Add(new DensityArea(1f, rightPillar1, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, topChunk1, DensityArea.eMapItems.terrainObstacles));
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, botChunk1, DensityArea.eMapItems.terrainObstacles));
             JSONLayout10.DensityAreas.Add(new DensityArea(1f, new List<MapPosition> { new MapPosition(1, 0), new MapPosition(1, 2), new MapPosition(1, 5), new MapPosition(1, 7) }, DensityArea.eMapItems.terrainObstacles));
@@ -269,9 +275,12 @@ namespace Assets.Scripts.Map
             List<MapPosition> leftChunk2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 3), new MapPosition(1, 4));
             List<MapPosition> rightChunk2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 3), new MapPosition(7, 4));
 
-            JSONLayout11.DensityAreas.Add(new DensityArea(1f, leftPillar2, DensityArea.eMapItems.terrainObstacles));
-            JSONLayout11.DensityAreas.Add(new DensityArea(1f, rightPillar2, DensityArea.eMapItems.terrainObstacles));
-            JSONLayout11.DensityAreas.Add(new DensityArea(1f, leftChunk2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(0.9f, leftPillar2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(1f, leftPillar2, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(0.9f, rightPillar2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(1f, rightPillar2, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(0.9f, leftChunk2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout11.DensityAreas.Add(new DensityArea(1f, leftChunk2, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout11.DensityAreas.Add(new DensityArea(1f, rightChunk2, DensityArea.eMapItems.terrainObstacles)); JSONLayout10.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout11.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout11.LayoutName = "OneWayIntersection";
@@ -297,9 +306,11 @@ namespace Assets.Scripts.Map
             List<MapPosition> outsideCoordsLeft = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(1, 7));
             List<MapPosition> outsideCoordsRight = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 0), new MapPosition(7, 7));
 
-            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsLeft, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.80f, outsideCoordsLeft, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(1f, outsideCoordsLeft, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsLeft, DensityArea.eMapItems.thickGrass));
-            JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsRight, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(0.80f, outsideCoordsRight, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout1.DensityAreas.Add(new DensityArea(1f, outsideCoordsRight, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout1.DensityAreas.Add(new DensityArea(0.99f, outsideCoordsRight, DensityArea.eMapItems.thickGrass));
             JSONLayout1.DensityAreas.Add(new DensityArea(0.05f, pathCoords, DensityArea.eMapItems.terrainObstacles));
             JSONLayout1.DensityAreas.Add(new DensityArea(0.05f, pathCoords, DensityArea.eMapItems.thickGrass));

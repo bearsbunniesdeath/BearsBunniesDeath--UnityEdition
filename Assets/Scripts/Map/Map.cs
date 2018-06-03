@@ -226,16 +226,16 @@ public class Map
         for (int i = -1; i < this._rows + 1; i++)
         {
             //Bottom Row
-            mapObjects.Add(new MapObject(MapBuilder.instance.fenceObjects[UnityEngine.Random.Range(0, MapBuilder.instance.fenceObjects.Length)], new Vector2(i, -1)));
+            mapObjects.Add(new MapObject(MapBuilder.instance.terrainObjects[UnityEngine.Random.Range(0, MapBuilder.instance.terrainObjects.Length)], new Vector2(i, -1)));
             //Top Row
-            mapObjects.Add(new MapObject(MapBuilder.instance.fenceObjects[UnityEngine.Random.Range(0, MapBuilder.instance.fenceObjects.Length)], new Vector2(i, this._rows)));
+            mapObjects.Add(new MapObject(MapBuilder.instance.terrainObjects[UnityEngine.Random.Range(0, MapBuilder.instance.terrainObjects.Length)], new Vector2(i, this._rows)));
         }
         for (int i = 0; i < this._rows; i++)
         {
             //Left Col
-            mapObjects.Add(new MapObject(MapBuilder.instance.fenceObjects[UnityEngine.Random.Range(0, MapBuilder.instance.fenceObjects.Length)], new Vector2(-1, i)));
+            mapObjects.Add(new MapObject(MapBuilder.instance.terrainObjects[UnityEngine.Random.Range(0, MapBuilder.instance.terrainObjects.Length)], new Vector2(-1, i)));
             //Right Col
-            mapObjects.Add(new MapObject(MapBuilder.instance.fenceObjects[UnityEngine.Random.Range(0, MapBuilder.instance.fenceObjects.Length)], new Vector2(this._rows, i)));
+            mapObjects.Add(new MapObject(MapBuilder.instance.terrainObjects[UnityEngine.Random.Range(0, MapBuilder.instance.terrainObjects.Length)], new Vector2(this._rows, i)));
         }
 
 

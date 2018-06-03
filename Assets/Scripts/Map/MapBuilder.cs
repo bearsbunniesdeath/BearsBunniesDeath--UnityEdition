@@ -40,8 +40,8 @@ public class MapBuilder : MonoBehaviour {
     public int columns = 64;                                        //Number of columns in our gameboard
     public GameObject[] floorTiles;                                 //Array of floor prefabs.
     public GameObject pathTile;
-    public GameObject[] terrainObjects;                             //Array of terrain objects (tree, rocks, stumps, etc)
-    public GameObject[] fenceObjects;                             //Array of terrain objects that you cannot jump over (tree, rocks, etc)
+    public GameObject[] terrainObjects;                             //Array of terrain objects (tree, rocks, etc)
+    public GameObject[] jumpableObjects;                             
     public GameObject thickGrass;
     public GameObject berryBush;
     public GameObject StartObject;                             //temp icon "S" to show the start
@@ -108,6 +108,7 @@ public class MapBuilder : MonoBehaviour {
     public GameObject[] GetAllGameObjects()
     {
         List<GameObject> objs = floorTiles.Concat(terrainObjects).ToList();
+        objs.AddRange(floorTiles.Concat(jumpableObjects).ToList());
         objs.Add(pathTile);
         objs.Add(thickGrass);
         objs.Add(berryBush);

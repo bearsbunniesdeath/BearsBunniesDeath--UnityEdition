@@ -88,6 +88,10 @@ public abstract class MapBlock
         {
             return MapBuilder.instance.terrainObjects;
         }
+        else if (type == DensityArea.eMapItems.jumpableObstcles)
+        {
+            return MapBuilder.instance.jumpableObjects;
+        }
         else if (type == DensityArea.eMapItems.pathTile)
         {
             return new GameObject[] { MapBuilder.instance.pathTile };
@@ -138,6 +142,7 @@ public class DensityArea
         bearTrap,
         arrowTrap,
         terrainObstacles,
+        jumpableObstcles,
         pathTile,
         bomb,
         armedBomb,

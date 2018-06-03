@@ -28,7 +28,8 @@ namespace Assets.Scripts.Map
         private List<MapPosition> sparsePositions;
         private List<MapPosition> densePositions; //Need to save this for thick grass placement
 
-        private float DENSE_PROBABILITY = 0.30f;
+        private float DENSE_OBSTACLE_PROBABILITY = 0.30f;
+        private float DENSE_JUMPABLE_PROBABILITY = 0.10f;
         private float THICK_GRASS_PROBABILITY = 0.50f;
         private float SPARSE_PROBABILITY = 0.00f;
         private float UNDER_HOUSE_PROBABILITY = 0.0f;
@@ -143,7 +144,8 @@ namespace Assets.Scripts.Map
                     densePositions.Add(new MapPosition(coord.x, coord.y));
                 }
             }
-            DensityAreas.Add(new DensityArea(DENSE_PROBABILITY, densePositions, DensityArea.eMapItems.terrainObstacles));
+            DensityAreas.Add(new DensityArea(DENSE_OBSTACLE_PROBABILITY, densePositions, DensityArea.eMapItems.terrainObstacles));
+            DensityAreas.Add(new DensityArea(DENSE_JUMPABLE_PROBABILITY, densePositions, DensityArea.eMapItems.jumpableObstcles));
             DensityAreas.Add(new DensityArea(THICK_GRASS_PROBABILITY, densePositions, DensityArea.eMapItems.thickGrass));
         }
 
@@ -197,6 +199,7 @@ namespace Assets.Scripts.Map
             List<MapPosition> fuzzyEdges = new List<MapPosition>();
             fuzzyEdges.AddRange(MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 1), new MapPosition(5, 6))); //Fuzz around island
             DensityArea solidWallsDensityArea = new DensityArea(1.0f, wallCoords, DensityArea.eMapItems.terrainObstacles);
+            //DensityArea solidWallsDensityArea_jumpable = new DensityArea(1.0f, wallCoords, DensityArea.eMapItems.jumpableObstcles);
             DensityArea fuzzyWallsDensityArea = new DensityArea(0.5f, fuzzyEdges, DensityArea.eMapItems.terrainObstacles);
             AllLayouts.Add(new List<DensityArea> { solidWallsDensityArea, fuzzyWallsDensityArea });
             //===========================
@@ -217,7 +220,8 @@ namespace Assets.Scripts.Map
             wallCoords.AddRange(MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 3), new MapPosition(5, 4))); //Center Island
             List<MapPosition> fuzzyEdges = new List<MapPosition>();
             fuzzyEdges.AddRange(MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 2), new MapPosition(6, 5))); //Fuzz around island
-            DensityArea solidWallsDensityArea = new DensityArea(1.0f, wallCoords, DensityArea.eMapItems.terrainObstacles);
+            DensityArea solidWallsDensityArea = new DensityArea(1f, wallCoords, DensityArea.eMapItems.terrainObstacles);
+            //DensityArea solidWallsDensityArea_jumpable = new DensityArea(1.0f, wallCoords, DensityArea.eMapItems.jumpableObstcles);
             DensityArea fuzzyWallsDensityArea = new DensityArea(0.5f, fuzzyEdges, DensityArea.eMapItems.terrainObstacles);
             AllLayouts.Add(new List<DensityArea> { solidWallsDensityArea, fuzzyWallsDensityArea });
             //===========================
@@ -233,7 +237,8 @@ namespace Assets.Scripts.Map
             //Dense area of obstacles and grass
             if (index == 0)
             {
-                DensityAreas.Add(new DensityArea(DENSE_PROBABILITY, allCoords, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(DENSE_OBSTACLE_PROBABILITY, allCoords, DensityArea.eMapItems.terrainObstacles));
+                DensityAreas.Add(new DensityArea(DENSE_JUMPABLE_PROBABILITY, allCoords, DensityArea.eMapItems.jumpableObstcles));
                 DensityAreas.Add(new DensityArea(THICK_GRASS_PROBABILITY, allCoords, DensityArea.eMapItems.thickGrass));
             }
 

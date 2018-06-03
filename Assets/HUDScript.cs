@@ -237,7 +237,11 @@ public class HUDScript : MonoBehaviour
         {
             //Most be a bunny at this point.
             BunnyBehaviour asBunny = (BunnyBehaviour)item;
-            if (asBunny.Gender == BunnyBehaviour.eBunnyGender.female)
+            if (asBunny.Mate != null )
+            {
+                return eHUDItemType.bunnyMating;
+            }
+            else if (asBunny.Gender == BunnyBehaviour.eBunnyGender.female)
             {
                 return eHUDItemType.bunnyFemale;
             }

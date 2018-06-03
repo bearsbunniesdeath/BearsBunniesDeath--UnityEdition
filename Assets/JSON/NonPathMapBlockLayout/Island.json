@@ -404,7 +404,7 @@
                 }
             ],
             "Density": 1.0,
-            "GameObjType": 9
+            "GameObjType": 10
         }
     ],
     "blockObjects": {}
