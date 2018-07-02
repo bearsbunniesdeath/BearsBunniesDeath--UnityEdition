@@ -12,7 +12,7 @@ public abstract class MapBlock
     [SerializeField]
     protected Vector2 blockPosition;        //The position of the block within the map
     [SerializeField]
-    protected List<DensityArea> DensityAreas;
+    public List<DensityArea> DensityAreas;
 
     [SerializeField]
     protected MapObjectGrid blockObjects;   //A list of all objects created for the block

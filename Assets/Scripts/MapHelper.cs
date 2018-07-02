@@ -131,12 +131,16 @@ namespace Assets.Scripts
             eThreeQuarter
         }
 
-        public static void RotateMapObjectsInBlock(List<MapObject> originalPosList, eClockWiseTurn turnType) {
-            int centerPoint = MapBlock.SIZE_OF_BLOCK / 2; 
-            foreach (MapObject MapObj in originalPosList) {
-
-                Math.Cos(2);
-
+        public static void RotateMapObjectsInBlock(ref MapBlock mb, eClockWiseTurn turnType) {
+            float centerPoint = (MapBlock.SIZE_OF_BLOCK / 2) - 0.5f;
+            foreach (DensityArea dArea in mb.DensityAreas)
+            {
+                foreach (MapPosition point in dArea.DensityCoords) {
+                    MapPosition rotatedPoint = point.Rotate(90.0, new Vector2(centerPoint, centerPoint));
+                    point.x = rotatedPoint.x;
+                    point.y = rotatedPoint.y;
+                    Debug.Log("Did it work?");
+                }
             }
 
         }
@@ -145,6 +149,27 @@ namespace Assets.Scripts
             return inBool ? 1 : 0;
         }
 
+    }
+}
+
+public static class VectorExtentions
+{
+    public static MapPosition Rotate(this MapPosition pt, double angle, Vector2 center)
+    {
+        Vector2 v = new Vector2(pt.x - center.x, pt.y - center.y).Rotate(angle);
+        return new MapPosition(v.x + center.x, v.y + center.y);
+    }
+
+    public static Vector2 Rotate(this Vector2 v, double degrees)
+    {
+        return v.RotateRadians(degrees * Math.PI / 180);
+    }
+
+    public static Vector2 RotateRadians(this Vector2 v, double radians)
+    {
+        double ca = Math.Cos(radians);
+        double sa = Math.Sin(radians);
+        return new Vector2((float)(ca * v.x - sa * v.y), (float)(sa * v.x + ca * v.y));
     }
 }
 

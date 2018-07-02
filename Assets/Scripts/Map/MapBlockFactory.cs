@@ -59,7 +59,7 @@ namespace Assets.Scripts.Map
             else if (numberOfOpenings == 2 && topOpen == bottomOpen) //Straight Path
             {
                 //This is a part of critical path (Straight)
-                string dirPath = Application.dataPath + "/JSON/NonPathMapBlockLayout/";
+                string dirPath = Application.dataPath + "/JSON/PathMapBlockLayout/";
                 String path = dirPath + JSONNameStraightPathProbabilityMap[UnityEngine.Random.Range(0, JSONNameStraightPathProbabilityMap.Count)] + ".JSON";
 
                 //Read the text from directly from the test.txt file
@@ -70,13 +70,13 @@ namespace Assets.Scripts.Map
                 newBlock = nonPathBlock;
 
                 if (!topOpen)
-                {//At this point it must be a horizontal straight path
-                    //TODO: this
-                    newBlock = new CriticalPathMapBlock(x, y, leftOpen, topOpen, rightOpen, bottomOpen);
+                {//At this point it must be a horizontal straight path (rotate JSON for vertical path)
+                    MapHelper.RotateMapObjectsInBlock(ref newBlock, MapHelper.eClockWiseTurn.eQuarter);
                 }
 
             }
             else if (numberOfOpenings == 2) {
+                //"L" shaped path 
                 newBlock = new CriticalPathMapBlock(x, y, leftOpen, topOpen, rightOpen, bottomOpen);
             }
             else
@@ -102,7 +102,7 @@ namespace Assets.Scripts.Map
             }
             foreach (JSONLayout jlayout in StraightPathJSONLayouts)
             {
-                jlayout.SaveToJSON();
+                jlayout.SaveToJSON("PathMapBlockLayout");
             }
         }
 
@@ -320,6 +320,35 @@ namespace Assets.Scripts.Map
 
             StraightPathJSONLayouts.Add(JSONLayout1);
             #endregion
+
+            #region //Zigzag path
+            List<MapPosition> leftWall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
+            List<MapPosition> rightwall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
+            List<MapPosition> zig1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(5, 0), new MapPosition(7, 0));  //Shorter so we don't block path
+            List<MapPosition> zag1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 2), new MapPosition(5, 2));
+            List<MapPosition> zig2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 4), new MapPosition(6, 4));
+            List<MapPosition> zag2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 6), new MapPosition(5, 6));
+            pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(7, 7)); //Everything else, why not?
+
+            JSONLayout JSONLayout2 = new JSONLayout();
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, leftWall, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, leftWall, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, rightwall, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, rightwall, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, zig1, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, zig1, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, zag1, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, zag1, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, zig2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, zig2, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, zag2, DensityArea.eMapItems.terrainObstacles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, zag2, DensityArea.eMapItems.jumpableObstcles));
+            JSONLayout2.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
+            JSONLayout2.frequency = JSONLayout.eFrequency.eHigh;
+            JSONLayout2.LayoutName = "ZigZagStraightPath";
+
+            StraightPathJSONLayouts.Add(JSONLayout2);
+            #endregion
         }
 
 
@@ -336,13 +365,13 @@ namespace Assets.Scripts.Map
         public eFrequency frequency; //Enum for Low, Medium, High
         public string LayoutName;
 
-        public void SaveToJSON() {
+        public void SaveToJSON(string dirName = "NonPathMapBlockLayout") {
             JSONMapBlock realMapBlock = new JSONMapBlock(0, 0);
             realMapBlock.SetDensityAreas(this.DensityAreas);
 
             string jsonText = realMapBlock.GetJSONString();
 
-            string filePath = "/JSON/NonPathMapBlockLayout/";
+            string filePath = "/JSON/" + dirName +"/";
             string fileName =  LayoutName + ".json";
 
             filePath = Application.dataPath + filePath + fileName;
