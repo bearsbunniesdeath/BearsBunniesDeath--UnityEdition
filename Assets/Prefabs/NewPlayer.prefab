@@ -419,6 +419,7 @@ MonoBehaviour:
   IsInvincible: 0
   IsDead: 0
   DashNoise: {fileID: 8300000, guid: 93b08b78c39e06147aeae3192d5c7bbc, type: 3}
+  TiredDashNoise: {fileID: 8300000, guid: e24119b126a8c1c49b010d35efdbddc9, type: 3}
   ReviveNoise: {fileID: 8300000, guid: d1b38f466e3965641992a2122981c69b, type: 3}
   RigidBody: {fileID: 0}
 --- !u!114 &114021411873138152

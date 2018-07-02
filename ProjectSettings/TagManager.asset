@@ -53,13 +53,13 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: FloorMat
+  - name: base
     uniqueID: 3042318997
     locked: 0
   - name: Path
     uniqueID: 2407435251
     locked: 0
-  - name: StartAndFinishMats
+  - name: Mats
     uniqueID: 2113135395
     locked: 0
   - name: ThickGrass

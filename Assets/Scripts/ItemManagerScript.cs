@@ -30,6 +30,7 @@ public class ItemManagerScript : MonoBehaviour {
 
     private void LateUpdate(){
         foreach (IHoldableObject obj in HeldObjects){
+            //Remove dead items
             obj.ObjectTransform.localPosition = Vector3.zero;
         }
 

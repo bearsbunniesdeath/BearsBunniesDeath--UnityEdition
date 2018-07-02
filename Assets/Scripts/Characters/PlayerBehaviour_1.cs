@@ -23,6 +23,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
     public bool IsDead = false;
 
     public AudioClip DashNoise;
+    public AudioClip TiredDashNoise;
     public AudioClip ReviveNoise;
 
     //My components and child
@@ -122,6 +123,7 @@ public class PlayerBehaviour_1 : MonoBehaviour {
             myLightScript.Reset();
         }
         GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+        GetComponent<Rigidbody2D>().drag = NORMAL_DRAG;
         GetComponent<Rigidbody2D>().angularVelocity = 0;
         if (RigidBody != null)
         {
@@ -149,9 +151,16 @@ public class PlayerBehaviour_1 : MonoBehaviour {
                     Debug.Log("Start Dash.");
                     //Turn on ground level jump collider so we can "jump" over short objects
                     this.transform.Find(GROUND_LEVEL_COLLIDER_STRING).gameObject.SetActive(false);
-                    SoundEffectHelper.MakeNoise(myAudioSource, DashNoise);
                     RigidBody.AddForce(direction.normalized * DASH_FORCE, ForceMode2D.Impulse);
                     myCurrentNumberOfDashes -= 1;
+                    if (myCurrentNumberOfDashes > 0)
+                    {
+                        SoundEffectHelper.MakeNoise(myAudioSource, DashNoise);
+                    }
+                    else
+                    {
+                        SoundEffectHelper.MakeNoise(myAudioSource, TiredDashNoise);
+                    }
                     myCurrentDashTimer = DASH_DISTANCE / DASH_SPEED;
                     break;
                 }
