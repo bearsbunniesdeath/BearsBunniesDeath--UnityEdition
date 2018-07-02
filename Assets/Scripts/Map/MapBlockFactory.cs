@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Map;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Map
         static private List<JSONLayout> StraightPathJSONLayouts;
         static private List<String> JSONNameStraightPathProbabilityMap;
 
-        static MapBlockFactory(){
+        static MapBlockFactory() {
             NonPathJSONLayouts = new List<JSONLayout>();
             StraightPathJSONLayouts = new List<JSONLayout>();
             BuildAllNonPathJSONLayouts();
@@ -71,7 +72,13 @@ namespace Assets.Scripts.Map
 
                 if (!topOpen)
                 {//At this point it must be a horizontal straight path (rotate JSON for vertical path)
-                    MapHelper.RotateMapObjectsInBlock(ref newBlock, MapHelper.eClockWiseTurn.eQuarter);
+                    MapHelper.eClockWiseTurn turnAmount;
+                    turnAmount = UnityEngine.Random.Range(0, 2) == 0 ? MapHelper.eClockWiseTurn.eQuarter : MapHelper.eClockWiseTurn.eThreeQuarter;
+
+                    MapHelper.RotateMapObjectsInBlock(ref newBlock, turnAmount);
+                }
+                else if (UnityEngine.Random.Range(0, 2) == 0) {
+                    MapHelper.RotateMapObjectsInBlock(ref newBlock, MapHelper.eClockWiseTurn.eHalf);
                 }
 
             }
@@ -139,7 +146,7 @@ namespace Assets.Scripts.Map
             #region             //Bomb island in full forest
             JSONLayout JSONLayout3 = new JSONLayout();
             JSONLayout3.DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.armedBomb));
-            JSONLayout3. DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.bomb));
+            JSONLayout3.DensityAreas.Add(new DensityArea(0.25f, islandCoords, DensityArea.eMapItems.bomb));
             JSONLayout3.DensityAreas.Add(new DensityArea(0.30f, allCoords, DensityArea.eMapItems.terrainObstacles));
             JSONLayout3.DensityAreas.Add(new DensityArea(0.10f, allCoords, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout3.DensityAreas.Add(new DensityArea(0.50f, allCoords, DensityArea.eMapItems.thickGrass));
@@ -289,7 +296,7 @@ namespace Assets.Scripts.Map
 
             #region //House (has revival item inside)
             JSONLayout JSONLayout12 = new JSONLayout();
-            List<MapPosition> housePlacement = new List<MapPosition> {new MapPosition(0,0)};
+            List<MapPosition> housePlacement = new List<MapPosition> { new MapPosition(0, 0) };
             JSONLayout12.DensityAreas.Add(new DensityArea(1f, housePlacement, DensityArea.eMapItems.house));
             JSONLayout12.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout12.LayoutName = "HouseOnly";
@@ -299,10 +306,63 @@ namespace Assets.Scripts.Map
         }
 
         static public void BuildAllStraightPathJSONLayouts() {
-            #region //Normal Vertical Path Surrounded by Dense brush
+            StraightPathJSONLayouts.Add(BuildFourWidthStraightPathLayout());
+            StraightPathJSONLayouts.Add(BuildZigZagStraightPathJSONLayout());
+            StraightPathJSONLayouts.Add(BuildIslandStraightPathJSONLayout());
+            StraightPathJSONLayouts.Add(BuildIslandBlocksStraightPathJSONLayout());
+        }
+
+        private static JSONLayout BuildIslandStraightPathJSONLayout()
+        {
+            JSONLayout retLayout = new JSONLayout();
+            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 0), new MapPosition(6, 7));
+            List<MapPosition> leftWall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
+            List<MapPosition> rightwall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
+            List<MapPosition> islandCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 3), new MapPosition(5, 5));
+
+            retLayout.DensityAreas.Add(new DensityArea(0.80f, leftWall, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(1f, leftWall, DensityArea.eMapItems.jumpableObstcles));
+            retLayout.DensityAreas.Add(new DensityArea(0.80f, rightwall, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(1f, rightwall, DensityArea.eMapItems.jumpableObstcles));
+            retLayout.DensityAreas.Add(new DensityArea(1f, islandCoords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
+            retLayout.LayoutName = "IslandStraightPath";
+            retLayout.frequency = JSONLayout.eFrequency.eMedium;
+            return retLayout;
+        }
+
+        private static JSONLayout BuildIslandBlocksStraightPathJSONLayout()
+        {
+            JSONLayout retLayout = new JSONLayout();
+            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(7, 7));
+            List<MapPosition> island1Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 1), new MapPosition(2, 3));
+            List<MapPosition> island1Coords_1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(3, 1), new MapPosition(5, 2));
+            List<MapPosition> island2Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 5), new MapPosition(2, 6));
+            List<MapPosition> island3Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(4, 7), new MapPosition(5, 7));
+            List<MapPosition> island4Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(4, 4), new MapPosition(5, 5));
+            List<MapPosition> island5Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 4), new MapPosition(7, 7));
+            List<MapPosition> island6Coords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 1), new MapPosition(7, 2));
+
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island1Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island1Coords_1, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island2Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island3Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island4Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island5Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.9f, island6Coords, DensityArea.eMapItems.terrainObstacles));
+            retLayout.DensityAreas.Add(new DensityArea(0.05f, pathCoords, DensityArea.eMapItems.thickGrass));
+            retLayout.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
+            retLayout.LayoutName = "IslandBlocksAllPaths";
+            retLayout.frequency = JSONLayout.eFrequency.eLow;
+            return retLayout;
+        }
+
+        private static JSONLayout BuildFourWidthStraightPathLayout()
+        {
+            //Normal Vertical Path Surrounded by Dense brush
             JSONLayout JSONLayout1 = new JSONLayout();
 
-            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 0), new MapPosition(5,7));
+            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 0), new MapPosition(5, 7));
             List<MapPosition> outsideCoordsLeft = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(1, 7));
             List<MapPosition> outsideCoordsRight = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(6, 0), new MapPosition(7, 7));
 
@@ -317,18 +377,19 @@ namespace Assets.Scripts.Map
             JSONLayout1.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
             JSONLayout1.frequency = JSONLayout.eFrequency.eHigh;
             JSONLayout1.LayoutName = "FourWidthSimpleStraightPath";
+            return JSONLayout1;
+        }
 
-            StraightPathJSONLayouts.Add(JSONLayout1);
-            #endregion
+        private static JSONLayout BuildZigZagStraightPathJSONLayout()
+        {
 
-            #region //Zigzag path
             List<MapPosition> leftWall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(0, 7));
             List<MapPosition> rightwall = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(7, 0), new MapPosition(7, 7));
             List<MapPosition> zig1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(5, 0), new MapPosition(7, 0));  //Shorter so we don't block path
             List<MapPosition> zag1 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 2), new MapPosition(5, 2));
             List<MapPosition> zig2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(2, 4), new MapPosition(6, 4));
             List<MapPosition> zag2 = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(1, 6), new MapPosition(5, 6));
-            pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(7, 7)); //Everything else, why not?
+            List<MapPosition> pathCoords = MapHelper.GetRectangleOfPositionsBetweenPoints(new MapPosition(0, 0), new MapPosition(7, 7)); //Everything else, why not?
 
             JSONLayout JSONLayout2 = new JSONLayout();
             JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, leftWall, DensityArea.eMapItems.terrainObstacles));
@@ -344,14 +405,12 @@ namespace Assets.Scripts.Map
             JSONLayout2.DensityAreas.Add(new DensityArea(0.80f, zag2, DensityArea.eMapItems.terrainObstacles));
             JSONLayout2.DensityAreas.Add(new DensityArea(1f, zag2, DensityArea.eMapItems.jumpableObstcles));
             JSONLayout2.DensityAreas.Add(new DensityArea(1f, pathCoords, DensityArea.eMapItems.pathTile));
-            JSONLayout2.frequency = JSONLayout.eFrequency.eHigh;
+            JSONLayout2.frequency = JSONLayout.eFrequency.eLow;
             JSONLayout2.LayoutName = "ZigZagStraightPath";
 
-            StraightPathJSONLayouts.Add(JSONLayout2);
-            #endregion
+            return JSONLayout2;
         }
-
-
+    }
     }
 
     class JSONLayout {
@@ -383,4 +442,4 @@ namespace Assets.Scripts.Map
         }
     }
 
-}
+

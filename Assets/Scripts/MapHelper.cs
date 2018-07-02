@@ -133,13 +133,27 @@ namespace Assets.Scripts
 
         public static void RotateMapObjectsInBlock(ref MapBlock mb, eClockWiseTurn turnType) {
             float centerPoint = (MapBlock.SIZE_OF_BLOCK / 2) - 0.5f;
+            double deg;
+            switch (turnType) {
+                case eClockWiseTurn.eQuarter:
+                    deg = 270;
+                    break;
+                case eClockWiseTurn.eHalf:
+                    deg = 180;
+                    break;
+                case eClockWiseTurn.eThreeQuarter:
+                    deg = 90;
+                    break;
+                default:
+                    deg = 90;
+                    break;
+            }
             foreach (DensityArea dArea in mb.DensityAreas)
             {
                 foreach (MapPosition point in dArea.DensityCoords) {
-                    MapPosition rotatedPoint = point.Rotate(90.0, new Vector2(centerPoint, centerPoint));
+                    MapPosition rotatedPoint = point.Rotate(deg, new Vector2(centerPoint, centerPoint));
                     point.x = rotatedPoint.x;
                     point.y = rotatedPoint.y;
-                    Debug.Log("Did it work?");
                 }
             }
 
