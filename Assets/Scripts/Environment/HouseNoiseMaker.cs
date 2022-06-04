@@ -11,7 +11,9 @@ public class HouseNoiseMaker : NoiseMaker
         {
             foreach (Rigidbody2D body in myNoiseMakingBodies) {
                 //Player must be alive for footsteps to happen
-                PlayerBehaviour_1 maybePlayer = body.GetComponent<PlayerBehaviour_1>();
+                if (body != null)
+                {
+PlayerBehaviour_1 maybePlayer = body.GetComponent<PlayerBehaviour_1>();
                 if (maybePlayer != null)
                 {
                     if (!maybePlayer.IsDead && body.velocity.magnitude > NoiseThreshold)
@@ -23,6 +25,8 @@ public class HouseNoiseMaker : NoiseMaker
                         myAudioSource.Stop();
                     }
                 }
+                }
+                
                 else {
                     //Just do it for all the time for bunnies and bears (for now)
                     SoundEffectHelper.LoopNoiseAtRandomPoint(myAudioSource, DefaultAudioLoop);
