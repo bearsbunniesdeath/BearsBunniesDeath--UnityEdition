@@ -16,7 +16,7 @@ public class MapBuilder : MonoBehaviour {
         if (instance == null) 
             instance = this;
         else
-            throw new Exception("Cannot create more than one MapBuilder");
+                throw new Exception("Cannot create more than one MapBuilder");
     }
 
     // Using Serializable allows us to embed a class with sub properties in the inspector.
