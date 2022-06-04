@@ -34,7 +34,7 @@ public class Map
     private const int NUMBER_OF_ARMED_BOMBS = 2;
     private const int NUMBER_OF_BUNNIES_PER_JAIL = 4;
     private const int NUMBER_OF_BUNNYGUARDS_PER_JAIL = 1;
-    private const int NUMBER_OF_DODDADS = 25;
+    private const int NUMBER_OF_DODDADS = 75;
     private const int NUMBER_OF_ARROW_SHOOTERS = 0;
 
     public enum eMapBlockType
